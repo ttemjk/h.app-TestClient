@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:app="http://schemas.android.com/apk/res-auto"
+	xmlns:tools="http://schemas.android.com/tools"
+	android:layout_width="match_parent"
+	android:layout_height="match_parent"
+	android:fillViewport="true">
+
+	<androidx.constraintlayout.widget.ConstraintLayout
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:padding="@dimen/margin_activity_vertical">
+
+		<com.google.android.material.textfield.TextInputLayout
+			android:id="@+id/username_entry_wrapper"
+			android:layout_width="300dp"
+			android:layout_height="wrap_content"
+			android:layout_marginTop="@dimen/margin_large"
+			app:errorEnabled="true"
+			app:hintEnabled="false"
+			app:layout_constraintLeft_toLeftOf="parent"
+			app:layout_constraintRight_toRightOf="parent"
+			app:layout_constraintTop_toTopOf="parent">
+
+			<com.google.android.material.textfield.TextInputEditText
+				android:id="@+id/username_entry"
+				android:layout_width="300dp"
+				android:layout_height="wrap_content"
+				android:hint="@string/choose_username"
+				android:imeOptions="actionNext"
+				android:inputType="text"
+				android:maxLines="1" />
+
+			<requestFocus />
+
+		</com.google.android.material.textfield.TextInputLayout>
+
+		<Button
+			android:id="@+id/set_and_continue"
+			style="@style/BasicButton"
+			android:layout_width="300dp"
+			android:layout_height="wrap_content"
+			android:layout_marginTop="@dimen/margin_activity_horizontal"
+			android:background="@drawable/helios_button"
+			android:enabled="false"
+			android:text="@string/setup_next"
+			app:layout_constraintLeft_toLeftOf="parent"
+			app:layout_constraintRight_toRightOf="parent"
+			app:layout_constraintTop_toBottomOf="@+id/username_entry_wrapper"
+			tools:enabled="true" />
+
+	</androidx.constraintlayout.widget.ConstraintLayout>
+
+</LinearLayout>

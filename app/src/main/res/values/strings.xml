@@ -1,0 +1,51 @@
+<resources>
+    <string name="app_name">helios. TEST CLIENT</string>
+    <string name="action_settings">Settings</string>
+    <string name="action_test">Test</string>
+    <string name="action_send">Send</string>
+    <string name="action_new_topic">New Chat</string>
+    <string name="title_activity_chat">Chat</string>
+    <string name="avatar_image">Avatar image</string>
+    <string name="avatar_info">Set your avatar by clicking the image</string>
+    <string name="choose_username">Choose a username (nickname)</string>
+    <string name="setup_username_intro">Choose a username (nickname)</string>
+    <string name="name_too_long">Name is too long</string>
+    <string name="setup_next">Set username and continue</string>
+    <string name="main_or_settings_expl">Would you like to set other settings? E.g. picture, profile details, location, color theme.</string>
+    <string name="goto_main_text">No, continue</string>
+    <string name="goto_settings_text">Yes, go to settings</string>
+    <string name="setting_user_id">eu.h2020.helios_social.USER_ID</string>
+    <string name="open_settings">open_settings</string>
+    <string name="setting_username">username</string>
+    <string name="setting_fullname">fullname</string>
+    <string name="setting_work_latlong">worklatlong</string>
+    <string name="setting_home_latlong">homelatlong</string>
+    <string name="setting_work_address">work</string>
+    <string name="setting_home_address">home</string>
+    <string name="setting_phone_number">phonenumber</string>
+    <string name="setting_email_address">email</string>
+    <string name="setting_sharing">list</string>
+    <string name="setting_location">location_setting</string>
+    <string name="setting_tag">tag_setting</string>
+    <string name="setting_theme">theme</string>
+    <string name="chat_default_topic">helios</string>
+    <string name="chat_bug_channel">BUG CHAT</string>
+    <string name="chat_show_bug_channel">true</string>
+    <string-array name="chat_init_topics">
+        <item>Citizen Journalist</item>
+    </string-array>
+    <string name="title_activity_media_view">MediaViewActivity</string>
+    <string name="action_peer_tag_list">Discover Others</string>
+    <string name="action_topic_members_list">Topic members online</string>
+    <string name="action_join_a_topic">Join a topic</string>
+    <string name="pref_theme_title">Theme</string>
+    <string name="pref_theme_light">Light</string>
+    <string name="pref_theme_dark">Dark</string>
+    <string name="pref_theme_cadetblue">Cadet Blue</string>
+    <string name="pref_theme_richblack">Rich Black</string>
+    <string name="pref_theme_auto">Automatic (Daytime)</string>
+    <string name="pref_theme_system">System Default</string>
+    <string-array name="relay_addresses">
+        <item>/ip4/130.188.225.47/tcp/28327/ws/p2p/QmUFSesHRPzJxJzLccTtYc4QNoiDSEe3r6KgBwLdTrxpKh</item>
+    </string-array>
+</resources>

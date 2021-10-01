@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Context Name" />
+    <EditText
+        android:id="@+id/context_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="" />
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Select activity type" />
+    <RadioGroup
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/activity_context"
+        android:orientation="vertical">
+        <RadioButton android:id="@+id/context_walking"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Walking" />
+        <RadioButton android:id="@+id/context_invehicle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="In Vehicle"/>
+        <RadioButton android:id="@+id/context_onbicycle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="On bicycle"/>
+        <RadioButton android:id="@+id/context_running"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Running"/>
+        <RadioButton android:id="@+id/context_onfoot"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="On foot"/>
+        <RadioButton android:id="@+id/context_still"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Still"/>
+    </RadioGroup>
+
+</LinearLayout>

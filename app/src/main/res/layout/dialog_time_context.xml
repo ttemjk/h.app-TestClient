@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textStyle="bold"
+        android:text="Context Name" />
+    <EditText
+        android:id="@+id/context_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="" />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Start time"
+            android:textAllCaps="false"
+            android:id="@+id/context_time_start" />
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:textSize="@dimen/text_size_large"
+            android:id="@+id/context_time_start_view"/>
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="End time"
+            android:layout_weight="1"
+            android:textAllCaps="false"
+            android:id="@+id/context_time_end" />
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:textSize="@dimen/text_size_large"
+            android:id="@+id/context_time_end_view"/>
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Date"
+            android:layout_weight="1"
+            android:id="@+id/context_time_date"
+            android:textAllCaps="false" />
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:textSize="@dimen/text_size_large"
+            android:id="@+id/context_time_date_view" />
+    </LinearLayout>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Repeat:"/>
+    <CheckBox android:id="@+id/context_repeat_daily"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Daily"/>
+    <CheckBox android:id="@+id/context_repeat_weekly"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Weekly"/>
+    <CheckBox android:id="@+id/context_repeat_weekdays"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="On weekdays"/>
+    <CheckBox android:id="@+id/context_repeat_weekends"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="On weekends"/>
+
+</LinearLayout>

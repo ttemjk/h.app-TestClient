@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+  <color name="helios_primary">@color/blue_dark</color>
+  <color name="helios_accent">#f57467</color>
+
+  <color name="preference_category">@color/helios_accent</color>
+  <color name="preference_category_background">@color/black_almost</color>
+
+  <color name="color_primary">@color/white</color>
+
+  <color name="msg_in">@color/blue</color>
+  <color name="msg_out">#f57467</color>
+  <color name="notice_in">@color/blue_dark</color>
+  <color name="notice_out">@color/blue_elio</color>
+  <color name="msg_stroke">@color/msg_stroke_dark</color>
+
+  <color name="window_background">@color/blue_very_dark</color>
+  <color name="card_background">@color/blue_dark</color>
+  <color name="item_background_highlight">@color/blue</color>
+
+  <color name="helios_button_background_color">@color/blue_medium</color>
+  <color name="helios_button_text_neutral">@color/blue_light</color>
+  <color name="helios_button_text_disabled">#23cccccc</color>
+
+  <color name="thread_indicator">@color/blue</color>
+  <color name="thread_item_highlight">@color/black</color>
+
+  <color name="divider">@color/black</color>
+
+  <color name="tc_chat_item">@color/helios_blue</color>
+
+  <color name="tc_context_item">@color/helios_default_context_color</color>
+  <color name="tc_active_context_item">#007000</color>
+
+  <color name="tc_context_msg_importance_very_high">#fbe251</color>
+  <color name="tc_context_msg_importance_high">#f4a34f</color>
+  <color name="tc_context_msg_importance_medium">#ffaaaa</color>
+  <color name="tc_context_msg_importance_low">#aaaaff</color>
+  <color name="tc_context_msg_importance_very_low">#ccbbcc</color>
+  
+</resources>

@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+  <string-array name="profile_share_names">
+    <item>Share only name</item>
+    <item>Share full profile</item>
+  </string-array>
+  <string-array name="profile_share_values">
+    <item>0</item>
+    <item>1</item>
+  </string-array>
+  <string-array name="location_updates">
+    <item>Location enabled</item>
+    <item>Location disabled</item>
+  </string-array>
+  <string-array name="location_updates_values">
+    <item>0</item>
+    <item>1</item>
+  </string-array>
+  <string-array name="tag_updates">
+    <item>no-tags</item>
+    <item>dogs</item>
+    <item>cats</item>
+  </string-array>
+  <string-array name="tag_updates_values">
+    <item>0</item>
+    <item>1</item>
+    <item>2</item>
+  </string-array>
+  <string-array name="pref_theme_entries">
+    <item>@string/pref_theme_light</item>
+    <item>@string/pref_theme_dark</item>
+    <item>@string/pref_theme_system</item>
+  </string-array>
+  <string name="pref_theme_light_value" translatable="false">light</string>
+  <string name="pref_theme_dark_value" translatable="false">dark</string>
+  <string name="pref_theme_system_value" translatable="false">system</string>
+  <string-array name="pref_theme_values">
+    <item>@string/pref_theme_light_value</item>
+    <item>@string/pref_theme_dark_value</item>
+    <item>@string/pref_theme_system_value</item>
+  </string-array>
+  <string-array name="message_importances">
+    <item>Importance unknown</item>
+    <item>Importance very low</item>
+    <item>Importance low</item>
+    <item>Importance medium</item>
+    <item>Importance high</item>
+    <item>Importance very high</item>
+  </string-array>
+  <string-array name="message_importance_values">
+    <item>0</item>
+    <item>1</item>
+    <item>2</item>
+    <item>3</item>
+    <item>4</item>
+    <item>5</item>
+  </string-array>
+</resources>

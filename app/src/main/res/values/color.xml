@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+  <color name="blue">#2D3E50</color>
+  <color name="blue_dark">#222E3C</color>
+  <color name="blue_very_dark">#0F1720</color>
+  <color name="blue_medium">#4F6C8C</color>
+  <color name="blue_elio">#236087</color>
+  <color name="blue_elio_light">#3C80A9</color>
+  <color name="blue_light">#2A93C6</color>
+  <color name="blue_grey">#EBEFF2</color>
+  <color name="yellow">#9e9d24</color>
+  <color name="green">#5C940D</color>
+  <color name="green_light">#95D220</color>
+  <color name="red">#a40000</color>
+  <color name="white">#FFFFFF</color>
+  <color name="black">#000000</color>
+  <color name="black_almost">#080C10</color>
+
+  <color name="helios_default_context_color">#222E3C</color>
+  <color name="helios_context_deepspace_color">#466365</color>
+  <color name="helios_context_midnightgreen_color">#003844</color>
+  <color name="helios_context_asparagus_color">#8BB174</color>
+  <color name="helios_context_forestgreen_color">#6BAA75</color>
+  <color name="helios_context_skobeloff_color">#006C67</color>
+  <color name="helios_context_skobelofflight_color">#16697a</color>
+  <color name="helios_context_queenblue_color">#3E6990</color>
+  <color name="helios_context_darkpurple_color">#381D2A</color>
+  <color name="helios_context_darkred_color">#720026</color>
+  <color name="helios_context_brownish_color">#641220</color>
+  <color name="helios_context_candypink_color">#E76B74</color>
+  <color name="helios_context_chineseviolet_color">#846B8A</color>
+  <color name="helios_context_blackshadows_color">#A89B9D</color>
+  <color name="helios_context_davysgrey_color">#545454</color>
+  <color name="helios_context_purple_color">#240046</color>
+  <color name="helios_context_intensepurple_color">#390099</color>
+  <color name="helios_context_lightpurple_color">#7B2CBF</color>
+  <color name="helios_context_lighterpurple_color">#995fa3</color>
+  <color name="helios_context_darkblue_color">#001233</color>
+  <color name="helios_context_orange_color">#e2711d</color>
+  <color name="helios_context_smoothorange_color">#dd614a</color>
+  <color name="helios_blue">#3851A3</color>
+
+  <color name="helios_highlight_color">#f57467</color>
+
+  <color name="m_grey_300">#e0e0e0</color>
+  <color name="m_grey_500">#9e9e9e</color>
+  <color name="m_blue_grey_50">#eceff1</color>
+
+  <color name="helios_primary">@color/blue</color>
+  <color name="helios_primary_dark">@color/blue_very_dark</color>
+  <color name="helios_accent">@color/blue</color>
+
+  <color name="window_background">#EBEBEB</color>
+  <color name="card_background">@color/cardview_light_background</color>
+  <color name="item_background_highlight">#DCDCDC</color>
+  <color name="helios_warning_background">@color/red</color>
+  <color name="action_bar_text">@color/white</color>
+  <color name="private_message_date_inverse">@color/m_grey_300</color>
+  <color name="forum_avatar_shadow">#99000000</color>
+
+  <color name="color_primary">#dd000000</color>
+  <color name="msg_in">@color/white</color>
+  <color name="msg_out">@color/blue_elio_light</color>
+  <color name="notice_in">@color/blue_grey</color>
+  <color name="notice_out">@color/blue_elio</color>
+  <color name="msg_stroke_light">#cbcbcb</color>
+  <color name="msg_stroke_dark">#333333</color>
+  <color name="msg_stroke">@color/msg_stroke_light</color>
+  <color name="msg_status_bubble_background">#66000000</color>
+  <color name="msg_selected_background">@color/helios_accent</color>
+
+  <!-- text colors -->
+  <color name="text_link">@color/blue_light</color>
+
+  <color name="text_primary">#EBEBEB</color>
+  <color name="text_primary_inverse">@color/white</color>
+  <color name="text_secondary_inverse">#b4ffffff</color>
+  <color name="text_tertiary_inverse">#80ffffff</color>
+
+  <color name="preference_category">@color/blue_medium</color>
+  <color name="preference_category_background">@color/window_background</color>
+
+  <color name="helios_button_background_color">@color/helios_accent</color>
+  <color name="helios_button_text_positive">@color/blue_light</color>
+  <color name="helios_button_text_neutral">@color/blue_medium</color>
+  <color name="helios_button_text_negative">@color/red</color>
+  <color name="helios_button_text_disabled">#28000000</color>
+
+  <color name="thread_indicator">@color/m_grey_500</color>
+  <color name="thread_item_background">@color/window_background</color>
+  <color name="thread_item_highlight">@color/white</color>
+
+  <color name="divider">#c1c1c1</color>
+
+  <color name="invisible">#00000000</color>
+  
+  <color name="tc_chat_item">@color/m_grey_300</color>
+
+  <color name="tc_context_item">@color/m_grey_300</color>
+  <color name="tc_active_context_item">@color/green_light</color>
+  
+  <color name="tc_context_msg_importance_very_high">#cc0000</color>
+  <color name="tc_context_msg_importance_high">#990099</color>
+  <color name="tc_context_msg_importance_medium">#111199</color>
+  <color name="tc_context_msg_importance_low">#117711</color>
+  <color name="tc_context_msg_importance_very_low">#666666</color>
+  
+</resources>

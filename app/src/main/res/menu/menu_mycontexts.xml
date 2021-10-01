@@ -1,0 +1,20 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context=".ui.MainActivity">
+
+    <item
+        android:id="@+id/create_context"
+        android:title="Create context" />
+    <item
+        android:id="@+id/create_activity_context"
+        android:title="Create activity context" />
+    <item
+        android:id="@+id/create_location_context"
+        android:title="Create location context" />
+    <item
+        android:id="@+id/create_time_context"
+        android:title="Create time context" />
+    <item
+        android:id="@+id/create_wifi_context"
+        android:title="Create WiFi context" />
+</menu>

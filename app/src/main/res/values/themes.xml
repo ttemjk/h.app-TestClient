@@ -1,0 +1,234 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+  <style name="HeliosTheme.Purple" parent="Theme.AppCompat.DayNight.DarkActionBar">
+    <item name="helios_primary">#240046</item>
+    <item name="helios_accent">#654c7d</item>
+    <item name="msg_out">#654c7d</item>
+    <item name="colorControlActivated">#fff</item>
+    <item name="colorControlHighlight">#fff</item>
+    <item name="colorAccent">#654c7d</item>
+  </style>
+
+  <style name="HeliosTheme.DeepSpace" parent="Theme.AppCompat.DayNight.DarkActionBar">
+    <item name="helios_primary">#466365</item>
+    <item name="helios_accent">#658F92</item>
+    <item name="msg_out">#658F92</item>
+    <item name="colorControlActivated">#fff</item>
+  </style>
+
+  <style name="HeliosTheme.MidnightGreen" parent="Theme.AppCompat.DayNight.DarkActionBar">
+    <item name="helios_primary">#003844</item>
+    <item name="helios_accent">#007791</item>
+    <item name="msg_out">#007791</item>
+    <item name="colorControlActivated">#fff</item>
+  </style>
+
+  <style name="HeliosTheme.Asparagus" parent="Theme.AppCompat.DayNight.DarkActionBar">
+    <item name="helios_primary">#8BB174</item>
+    <item name="helios_accent">#a2c08f</item>
+    <item name="msg_out">#a2c08f</item>
+    <item name="colorControlActivated">#fff</item>
+  </style>
+
+  <style name="HeliosTheme.ForestGreen" parent="Theme.AppCompat.DayNight.DarkActionBar">
+    <item name="helios_primary">#6BAA75</item>
+    <item name="helios_accent">#88bb90</item>
+    <item name="msg_out">#88bb90</item>
+    <item name="colorControlActivated">#fff</item>
+  </style>
+
+  <style name="HeliosTheme.Skobeloff" parent="Theme.AppCompat.DayNight.DarkActionBar">
+    <item name="helios_primary">#006C67</item>
+    <item name="helios_accent">#4c9894</item>
+    <item name="msg_out">#4c9894</item>
+    <item name="colorControlActivated">#fff</item>
+  </style>
+
+  <style name="HeliosTheme.Skobelofflight" parent="Theme.AppCompat.DayNight.DarkActionBar">
+    <item name="helios_primary">#16697a</item>
+    <item name="helios_accent">#5b96a1</item>
+    <item name="msg_out">#5b96a1</item>
+    <item name="colorControlActivated">#fff</item>
+  </style>
+
+  <style name="HeliosTheme.Queenblue" parent="Theme.AppCompat.DayNight.DarkActionBar">
+    <item name="helios_primary">#3E6990</item>
+    <item name="helios_accent">#6487a6</item>
+    <item name="msg_out">#6487a6</item>
+    <item name="colorControlActivated">#fff</item>
+  </style>
+
+  <style name="HeliosTheme.Darkpurple" parent="Theme.AppCompat.DayNight.DarkActionBar">
+    <item name="helios_primary">#381D2A</item>
+    <item name="helios_accent">#5f4a54</item>
+    <item name="msg_out">#5f4a54</item>
+    <item name="colorControlActivated">#fff</item>
+  </style>
+
+  <style name="HeliosTheme.Darkred" parent="Theme.AppCompat.DayNight.DarkActionBar">
+    <item name="helios_primary">#720026</item>
+    <item name="helios_accent">#8e3251</item>
+    <item name="msg_out">#8e3251</item>
+    <item name="colorControlActivated">#fff</item>
+  </style>
+
+  <style name="HeliosTheme.Brownish" parent="Theme.AppCompat.DayNight.DarkActionBar">
+    <item name="helios_primary">#641220</item>
+    <item name="helios_accent">#925962</item>
+    <item name="msg_out">#925962</item>
+    <item name="colorControlActivated">#fff</item>
+  </style>
+
+  <style name="HeliosTheme.Candypink" parent="Theme.AppCompat.DayNight.DarkActionBar">
+    <item name="helios_primary">#E76B74</item>
+    <item name="helios_accent">#ee979d</item>
+    <item name="msg_out">#ee979d</item>
+    <item name="colorControlActivated">#fff</item>
+  </style>
+
+  <style name="HeliosTheme.Chineseviolet" parent="Theme.AppCompat.DayNight.DarkActionBar">
+    <item name="helios_primary">#846B8A</item>
+    <item name="helios_accent">#A1889A</item>
+    <item name="msg_out">#A1889A</item>
+    <item name="colorControlActivated">#fff</item>
+  </style>
+
+  <style name="HeliosTheme.Blackshadows" parent="Theme.AppCompat.DayNight.DarkActionBar">
+    <item name="helios_primary">#A89B9D</item>
+    <item name="helios_accent">#b9afb0</item>
+    <item name="msg_out">#b9afb0</item>
+    <item name="colorControlActivated">#fff</item>
+  </style>
+
+  <style name="HeliosTheme.Davysgrey" parent="Theme.AppCompat.DayNight.DarkActionBar">
+    <item name="helios_primary">#545454</item>
+    <item name="helios_accent">#878787</item>
+    <item name="msg_out">#878787</item>
+    <item name="colorControlActivated">#fff</item>
+  </style>
+
+  <style name="HeliosTheme.Intensepurple" parent="Theme.AppCompat.DayNight.DarkActionBar">
+    <item name="helios_primary">#2d007a</item>
+    <item name="helios_accent">#8166AF</item>
+    <item name="msg_out">#8166AF</item>
+    <item name="colorControlActivated">#fff</item>
+  </style>
+
+  <style name="HeliosTheme.Lightpurple" parent="Theme.AppCompat.DayNight.DarkActionBar">
+    <item name="helios_primary">#7B2CBF</item>
+    <item name="helios_accent">#9ad26b</item>
+    <item name="msg_out">#9ad26b</item>
+    <item name="colorControlActivated">#fff</item>
+  </style>
+
+  <style name="HeliosTheme.Lighterpurple" parent="Theme.AppCompat.DayNight.DarkActionBar">
+    <item name="helios_primary">#995fa3</item>
+    <item name="helios_accent">#5fa399</item>
+    <item name="msg_out">#5fa399</item>
+    <item name="colorControlActivated">#fff</item>
+  </style>
+
+  <style name="HeliosTheme.darkblue" parent="Theme.AppCompat.DayNight.DarkActionBar">
+    <item name="helios_primary">#001233</item>
+    <item name="helios_accent">#4c5970</item>
+    <item name="msg_out">#4c5970</item>
+    <item name="colorControlActivated">#fff</item>
+  </style>
+
+  <style name="HeliosTheme.Orange" parent="Theme.AppCompat.DayNight.DarkActionBar">
+    <item name="helios_primary">#e2711d</item>
+    <item name="helios_accent">#e78d4a</item>
+    <item name="msg_out">#e78d4a</item>
+    <item name="colorControlActivated">#fff</item>
+  </style>
+
+  <style name="HeliosTheme.Smoothorange" parent="Theme.AppCompat.DayNight.DarkActionBar">
+    <item name="helios_primary">#dd614a</item>
+    <item name="helios_accent">#e3806e</item>
+    <item name="msg_out">#e3806e</item>
+    <item name="colorControlActivated">#fff</item>
+  </style>
+
+
+  <style name="HeliosTheme" parent="Theme.AppCompat.DayNight.DarkActionBar">
+    <item name="colorPrimary">@color/helios_primary</item>
+    <item name="colorPrimaryDark">@color/helios_primary_dark</item>
+    <item name="colorAccent">@color/helios_accent</item>
+    <item name="helios_primary">@color/helios_primary</item>
+    <item name="helios_accent">@color/helios_accent</item>
+    <item name="msg_out">@color/msg_out</item>
+    <item name="android:textColorLink">@color/text_link</item>
+    <item name="android:windowBackground">@color/window_background</item>
+    <item name="android:windowAnimationStyle">@style/ActivityAnimation</item>
+    <item name="windowActionModeOverlay">true</item>
+    <item name="alertDialogTheme">@style/HeliosDialogTheme.Neutral</item>
+    <item name="preferenceTheme">@style/PreferenceThemeOverlay.v14.Material</item>
+  </style>
+
+  <style name="HeliosTheme.NoActionBar" parent="HeliosTheme">
+    <!--<item name="windowActionBar">false</item>-->
+    <item name="windowNoTitle">true</item>
+    <item name="toolbarStyle">@style/HeliosToolbar</item>
+  </style>
+
+  <style name="HeliosTheme.ActionBarOverlay" parent="HeliosTheme.NoActionBar">
+    <item name="android:windowActionBarOverlay">true</item>
+  </style>
+
+  <style name="ActivityAnimation" parent="@android:style/Animation.Activity">
+    <item name="android:activityOpenEnterAnimation">@anim/screen_new_in</item>
+    <item name="android:activityOpenExitAnimation">@anim/screen_old_out</item>
+    <item name="android:activityCloseEnterAnimation">@anim/screen_old_in</item>
+    <item name="android:activityCloseExitAnimation">@anim/screen_new_out</item>
+  </style>
+
+  <style name="HeliosDialogTheme" parent="Theme.AppCompat.DayNight.Dialog.MinWidth">
+    <item name="colorPrimary">@color/helios_primary</item>
+    <item name="helios_primary">@color/helios_primary</item>
+    <item name="helios_accent">@color/helios_primary</item>
+    <item name="colorPrimaryDark">@color/helios_primary_dark</item>
+    <item name="colorAccent">@color/helios_accent</item>
+    <item name="buttonBarPositiveButtonStyle">@style/HeliosButtonFlat.Positive</item>
+    <item name="buttonBarNeutralButtonStyle">@style/HeliosButtonFlat.Neutral</item>
+    <item name="buttonBarNegativeButtonStyle">@style/BasicButtonFlat.Negative</item>
+    <item name="android:textColorLink">@color/text_link</item>
+    <item name="android:windowBackground">@color/window_background</item>
+    <item name="android:windowAnimationStyle">@style/DialogAnimation</item>
+    <item name="android:filterTouchesWhenObscured">true</item>
+  </style>
+
+  <!-- Use this with care. Only used for the screen filter warning dialog -->
+  <style name="HeliosDialogThemeNoFilter" parent="HeliosDialogTheme">
+    <item name="android:filterTouchesWhenObscured">false</item>
+  </style>
+
+  <!-- Uses neutral colors for the buttons -->
+  <style name="HeliosDialogTheme.Neutral" parent="HeliosDialogTheme">
+    <item name="buttonBarPositiveButtonStyle">@style/HeliosButtonFlat.Neutral</item>
+    <item name="buttonBarNeutralButtonStyle">@style/HeliosButtonFlat.Neutral</item>
+    <item name="buttonBarNegativeButtonStyle">@style/HeliosButtonFlat.Neutral</item>
+  </style>
+
+  <style name="DialogAnimation" parent="@android:style/Animation.Dialog">
+    <item name="android:windowEnterAnimation">@anim/fade_in</item>
+    <item name="android:windowExitAnimation">@anim/fade_out</item>
+  </style>
+
+  <style name="OnboardingDialogTheme" parent="HeliosDialogTheme">
+    <item name="android:background">@color/helios_primary</item>
+    <item name="android:textColorPrimary">@color/text_primary_inverse</item>
+    <item name="android:textColorSecondary">@color/text_secondary_inverse</item>
+    <item name="buttonBarNeutralButtonStyle">@style/Widget.AppCompat.Button.Borderless</item>
+  </style>
+
+  <style name="TranslucentTheme" parent="Theme.AppCompat.NoActionBar">
+    <item name="android:colorBackgroundCacheHint">@null</item>
+    <item name="android:windowAnimationStyle">@android:style/Animation</item>
+    <item name="android:windowBackground">@android:color/transparent</item>
+    <item name="android:windowContentOverlay">@null</item>
+    <item name="android:windowIsTranslucent">true</item>
+    <item name="android:windowNoTitle">true</item>
+  </style>
+
+</resources>
