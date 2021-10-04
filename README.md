@@ -9,7 +9,7 @@ can be built using Android Studio.
   
 ## HELIOS software repositories and integrating the core modules
 
-The TestClient integrates core modults of HELIOS.
+*TestClient* integrates the core modules of HELIOS.
 
 HELIOS software components are organized into different repositories
 so that these components can be developed separately avoiding many
@@ -20,17 +20,56 @@ The  dependences are defined in the `build.gradle` file:
 ```
 dependencies {
     ...
-    implementation 'eu.h2020.helios_social.core.storage:storage:1.0.40'
-    implementation 'eu.h2020.helios_social.core.messaging:messaging:2.0.13'
+    implementation 'eu.h2020.helios_social.core.storage:storage:1.0.87'
+    implementation 'eu.h2020.helios_social.core.messaging:messaging:2.0.14'
     implementation 'eu.h2020.helios_social.core.profile:profile:1.0.9'
-    implementation 'eu.h2020.helios_social.core.security:security:1.0.1'
-    implementation 'eu.h2020.helios_social.core.context:context:1.0.14'
-    implementation 'eu.h2020.helios_social.core.contextualegonetwork:contextualegonetwork:1.0.20'
+    implementation 'eu.h2020.helios_social.core.security:security:1.0.3'
+    implementation 'eu.h2020.helios_social.core.context:context:1.0.15'
+    implementation 'eu.h2020.helios_social.core.contextualegonetwork:contextualegonetwork:1.0.24'
     implementation 'eu.h2020.helios_social.core.trustmanager:trustmanager:1.0.19'
 }
 ```
 To use the dependency in `build.gradle`, you should specify the last version available in Nexus, related to the last Jenkins's deploy.
 Thus, the functionality of the above modules can be currently used within the TestClient. New modules can be added by including the dependence to the build.gradle file.
+
+### How to use the HELIOS Nexus ###
+
+Similar to other dependencies available in Maven Central, Google or
+others repositories. In this case we specify the Nexus repository
+provided by Atos:
+
+`https://builder.helios-social.eu/repository/helios-repository/`
+
+This URL makes the project dependencies available.
+
+To access, we simply need credentials, that we will define locally in
+the variables `heliosUser` and `heliosPassword`.
+
+The `build.gradle` of the project define the Nexus repository and the
+credential variables in this way:
+
+```
+repositories {
+        ...
+        maven {
+            url "https://builder.helios-social.eu/repository/helios-repository/"
+            credentials {
+                username = heliosUser
+                password = heliosPassword
+            }
+        }
+    }
+```
+
+And the variables of Nexus's credentials are stored locally at
+`~/.gradle/gradle.properties`:
+
+```
+heliosUser=username
+heliosPassword=password
+```
+To request Nexus username and password, contact Atos (jordi.hernandezv@atos.net>).
+
 
 ## Building the application using Android Studio ##
 
@@ -77,11 +116,11 @@ contextual importance of incoming messages.
 In the above figure, after welcome screen (left image), the TestClient main view (center) is shown (implemented by the 
 class `MainActivity` in `eu.h2020.helios_social.heliostestclient.ui`) where on the top 
 the currently active user contexts are shown (green color), then, below are topics the user has subscribed. 
-The topics provide the area for group discussions. Then, at the bottom, there are entries for 
+The topics provide area for group discussions. Then, at the bottom, there are entries for 
 direct peer-to-peer discussions (the chat views are implemented by the classes `ChatActivity` and 
-DirectChatActivity, respectively).  MyContexts view (right) (implemented by `MyContextsView` class) shows 
+`DirectChatActivity`, respectively).  MyContexts view (right) (implemented by `MyContextsActivity` class) shows 
 the user contexts (active ones in green color) and allows the user to create and delete contexts.  
-Further, the figure shows the case that a message has arrived that is related to the 
+Further, the figure shows the case a message has arrived that is related to the 
 active context ("sailing") of the user. Only messages that are considered contextually important to the user 
 are shown/notified here.
 
@@ -100,9 +139,3 @@ It creates the Service for messaging, loads/initializes the user profile and con
 and initializes the (peer-to-peer) connectivity.
 
 Please, check the details of individual module libraries `README.md and doc folder for more details.
-
-
-
-
-
-

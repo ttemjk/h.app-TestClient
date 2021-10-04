@@ -6,8 +6,8 @@ android {
         applicationId "eu.h2020.helios_social.heliostestclient"
         minSdkVersion 26
         targetSdkVersion 29
-        versionCode 32
-        versionName "1.2.9"
+        versionCode 33
+        versionName "1.2.10"
         buildConfigField "long", "TIMESTAMP", System.currentTimeMillis() + "L"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -22,17 +22,6 @@ android {
         targetCompatibility = '1.8'
     }
 
-}
-
-configurations.all {
-    resolutionStrategy.dependencySubstitution {
-        substitute module("eu.h2020.helios_social.core.storage:storage") with project(':storage')
- //       substitute module("eu.h2020.helios_social.core.messaging:messaging") with project(':messaging')
-//         substitute module("eu.h2020.helios_social.core.profile:profile") with project(':profile')
-//         substitute module("eu.h2020.helios_social.core.security:security") with project(':security')
-        substitute module("eu.h2020.helios_social.core.context:context") with project(':context')
-//         substitute module("eu.h2020.helios_social.core.messaging_nodejslibp2p:messaging_nodejslibp2p") with project(":messaging_nodejslibp2p")
-    }
 }
 
 dependencies {
@@ -57,18 +46,15 @@ dependencies {
     implementation 'androidx.preference:preference:1.1.1'
     implementation 'com.google.code.gson:gson:2.8.7'
     implementation("com.google.guava:guava:30.1.1-android")
-
-    implementation project(path: ':storage')
-    // implementation 'eu.h2020.helios_social.core.storage:storage:1.0.40'
-    implementation project(path: ':messaging')
-    // implementation 'eu.h2020.helios_social.core.messaging:messaging:2.0.12'
-    implementation 'eu.h2020.helios_social.core.profile:profile:1.0.8'
-    implementation 'eu.h2020.helios_social.core.security:security:1.0.1'
-    // implementation 'eu.h2020.helios_social.core.context:context:1.0.13'
-    implementation project(path: ':context')
-    //implementation 'eu.h2020.helios_social.core.messagingnodejslibp2ptest:messagingnodejslibp2ptest:1.0.15'
-    //implementation project(path: ':messaging_nodejslibp2p')
-    implementation 'eu.h2020.helios_social.core.contextualegonetwork:contextualegonetwork:1.0.20'
-    implementation 'eu.h2020.helios_social.core.trustmanager:trustmanager:1.0.19'
     implementation 'de.hdodenhof:circleimageview:3.1.0'
+
+    // Helios module dependencies
+    implementation 'eu.h2020.helios_social.core.storage:storage:1.0.87'
+    implementation 'eu.h2020.helios_social.core.messaging:messaging:2.0.15'
+    implementation 'eu.h2020.helios_social.core.profile:profile:1.0.10'
+    implementation 'eu.h2020.helios_social.core.security:security:1.0.3'
+    implementation 'eu.h2020.helios_social.core.context:context:1.0.15'
+    implementation 'eu.h2020.helios_social.core.contextualegonetwork:contextualegonetwork:1.0.24'
+    implementation 'eu.h2020.helios_social.core.trustmanager:trustmanager:1.0.19'
+
 }
