@@ -72,6 +72,7 @@ public class ChatActivity extends BaseChatActivity {
     private String mUserId;
     private HeliosMessageStore mChatMessageStore;
     private final int mExpirationTimeAsDays = 7; // Messages older than 7 days are removed from SQLite
+    private int mTryOpenPrivateChat = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -256,6 +257,15 @@ public class ChatActivity extends BaseChatActivity {
 
 
     private void openPrivateChat(HeliosMessagePart msg) {
+        Log.d(TAG, "openPrivateChat disabled in SpringApp");
+        mTryOpenPrivateChat++;
+        if(mTryOpenPrivateChat >= 3){
+            Toast.makeText(this.getApplicationContext(), "Direct Messaging (DM) not supported in this version.", Toast.LENGTH_LONG).show();
+            mTryOpenPrivateChat = 0;
+        }
+
+        /*
+        //
         // If this is the user's message
         if (mUserId.equals(msg.senderUUID)) {
             return;
@@ -272,6 +282,7 @@ public class ChatActivity extends BaseChatActivity {
             i.putExtra(DirectChatActivity.CHAT_NETWORK_ID, networkId);
             startActivity(i);
         }
+        */
     }
 
     private void viewMediaFile(String mediaFileName) {

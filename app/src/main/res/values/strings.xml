@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">helios. AutumnApp GO</string>
+    <string name="app_name">helios.SpringApp</string>
     <string name="action_settings">Settings</string>
     <string name="action_test">Test</string>
     <string name="action_send">Send</string>
@@ -29,11 +29,11 @@
     <string name="setting_tag">tag_setting</string>
     <string name="setting_theme">theme</string>
     <string name="chat_default_topic">helios</string>
-    <string name="chat_bug_channel">BUG CHAT</string>
+    <string name="chat_bug_channel">bugchat</string>
     <string name="chat_show_bug_channel">true</string>
     <string-array name="chat_init_topics">
-        <item>Citizen Journalist</item>
-        <item>Weather</item>
+        <item>test</item>
+        <item>weather</item>
     </string-array>
     <string name="title_activity_media_view">MediaViewActivity</string>
     <string name="action_peer_tag_list">Discover Others</string>
