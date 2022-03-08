@@ -21,8 +21,8 @@ The  dependences are defined in the `build.gradle` file:
 dependencies {
     ...
     implementation 'eu.h2020.helios_social.core.storage:storage:1.0.87'
-    implementation 'eu.h2020.helios_social.core.messaging:messaging:2.0.14'
-    implementation 'eu.h2020.helios_social.core.profile:profile:1.0.9'
+    implementation 'eu.h2020.helios_social.core.messaging:messaging:2.0.17'
+    implementation 'eu.h2020.helios_social.core.profile:profile:1.0.13'
     implementation 'eu.h2020.helios_social.core.security:security:1.0.3'
     implementation 'eu.h2020.helios_social.core.context:context:1.0.15'
     implementation 'eu.h2020.helios_social.core.contextualegonetwork:contextualegonetwork:1.0.24'
@@ -68,7 +68,7 @@ And the variables of Nexus's credentials are stored locally at
 heliosUser=username
 heliosPassword=password
 ```
-To request Nexus username and password, contact Atos (jordi.hernandezv@atos.net>).
+To request Nexus username and password, contact Atos (jordi.hernandezv@atos.net).
 
 
 ## Building the application using Android Studio ##

@@ -4,6 +4,7 @@ import android.Manifest;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Build;
@@ -24,6 +25,7 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
+import androidx.preference.PreferenceManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -67,6 +69,7 @@ import eu.h2020.helios_social.core.sensor.ext.LocationSensor;
 import eu.h2020.helios_social.core.sensor.ext.TimeSensor;
 import eu.h2020.helios_social.core.sensor.ext.WifiSensor;
 import eu.h2020.helios_social.core.trustmanager.TrustManager;
+import eu.h2020.helios_social.heliostestclient.service.ContactList;
 import eu.h2020.helios_social.heliostestclient.service.HeliosMessagingServiceHelper;
 import eu.h2020.helios_social.heliostestclient.service.MessagingService;
 import eu.h2020.helios_social.heliostestclient.ui.adapters.MainAdapter;
@@ -84,9 +87,10 @@ MainActivity extends AppCompatActivity implements HeliosMessageListener, Context
             "com.google.android.gms.permission.ACTIVITY_RECOGNITION";
 
     private final Handler mHandler = new Handler(Looper.getMainLooper());
-    private MainAdapter mTopicAdapter;
+    private MainAdapter mTopicAdapter = null;
     private String mPreviousTag = null;
 
+    private static final ContactList mContactList = ContactList.getInstance();
     private final HeliosMessagingServiceHelper mMessageMgr = HeliosMessagingServiceHelper.getInstance();
 
     private static MainActivity activity;
@@ -129,11 +133,12 @@ MainActivity extends AppCompatActivity implements HeliosMessageListener, Context
         setSupportActionBar(toolbar);
         showWelcomeView();
 
-        // Init/check user account
-        checkUserAccount();
+        // Check if settings should be opened
+        checkSettings();
     }
 
     private void init() {
+
         // Init contextual ego network
         // initCen();
         initCenTest(); // temporarily
@@ -141,7 +146,9 @@ MainActivity extends AppCompatActivity implements HeliosMessageListener, Context
         // Init/check context module. Create example contexts for MyContexts view
         initContext();
 
-        // TODO: Should create App class to handle this and Singleton(s)
+        // Load stored topics and contexts
+        mContactList.loadTopics(this.getApplicationContext(), mEgoNetwork);
+
         setupTopicListView();
 
         // Handle permissions
@@ -185,10 +192,8 @@ MainActivity extends AppCompatActivity implements HeliosMessageListener, Context
     }
 
     private void setupTopicListView() {
-        //TODO: Load topics from SQL
-        // Create the adapter to convert the array to views
-        mTopicAdapter = new MainAdapter(this, HeliosConversationList.getInstance().getTopics(), mInfoControl,
-                                        mMessageInfo, mImportances);
+
+        mTopicAdapter = new MainAdapter(this, mContactList.getTopics(), mInfoControl, mMessageInfo, mImportances);
 
         mTopicAdapter.setOnItemClickListener(topicClickHandler);
         // If topics loaded already, hide progress bar
@@ -216,6 +221,7 @@ MainActivity extends AppCompatActivity implements HeliosMessageListener, Context
             if (!TextUtils.isEmpty(htc.uuid)) {
                 Intent i = new Intent(MainActivity.this, DirectChatActivity.class);
                 i.putExtra(DirectChatActivity.CHAT_UUID, htc.uuid);
+                i.putExtra(DirectChatActivity.CHAT_ID, htc.topic);
                 startActivity(i);
             } else {
                 String test = htc.topic;
@@ -243,11 +249,13 @@ MainActivity extends AppCompatActivity implements HeliosMessageListener, Context
             if (c.getClass().equals(Context.class)) {
                 // c.setActive(!c.isActive());
                 mMyContexts.setActive(c, !c.isActive());
-                mTopicAdapter.notifyDataSetChanged();
+                notifyDataSetChanged();
             } else {
                 Toast.makeText(MainActivity.this, "Context " + c.getName() + " is automatically activated!", Toast.LENGTH_SHORT).show();
             }
         }
+
+
 
 
         @Override
@@ -257,8 +265,15 @@ MainActivity extends AppCompatActivity implements HeliosMessageListener, Context
             // Allow deleting chats with uuid (1-1) for now
             if (!TextUtils.isEmpty(htc.uuid)) { // the long clicked item is a direct message
                 builder.setPositiveButton("Yes", (dialog, id) -> {
+                    mContactList.delTopic(htc.topic);
                     HeliosConversationList.getInstance().deleteConversationByTopicUUID(htc.uuid);
-                    mTopicAdapter.notifyDataSetChanged();
+                    notifyDataSetChanged();
+                    MessagingService service = mMessageMgr.getService();
+                    /*
+                    if(service != null) {
+                        service.doSaveJson();
+                    }
+                    */
                 });
                 // TODO strings to res
                 builder.setMessage("Chat messages will be deleted (excluding externally saved files).")
@@ -270,13 +285,16 @@ MainActivity extends AppCompatActivity implements HeliosMessageListener, Context
             } else { // the long clicked item is topic
                 builder.setPositiveButton("Yes", (dialog, id) -> {
                     try {
+                        mContactList.delTopic(htc.topic);
                         HeliosConversationList.getInstance().getTopics().remove(htc);
                         HeliosConversation c = HeliosConversationList.getInstance().getConversation(htc.topic);
                         if(c != null) {
+                            // TODO. Not syncronized. Needed remove method to HeliosConverssationList
                             HeliosConversationList.getInstance().getConversations().remove(c);
+                            MessagingService service = mMessageMgr.getService();
                         }
                         mMessageMgr.unsubscribe(new HeliosTopic(htc.topic, htc.topic));
-                        mTopicAdapter.notifyDataSetChanged();
+                        notifyDataSetChanged();
                     } catch (HeliosMessagingException e) {
                         e.printStackTrace();
                     }});
@@ -305,45 +323,14 @@ MainActivity extends AppCompatActivity implements HeliosMessageListener, Context
         }
     };
 
-    private void checkUserAccount() {
+    private void checkSettings() {
         HeliosProfileManager profileMgr = HeliosProfileManager.getInstance();
         android.content.Context appCtx = getApplicationContext();
 
-        // Check ProfileManager key generation
-        profileMgr.keyInit(appCtx);
-        // Get default preferences userId
-        profileMgr.identityInit(this, getString(R.string.setting_user_id));
-
         String userName = profileMgr.load(appCtx, getString(R.string.setting_username));
         String openSettings = profileMgr.load(appCtx, getString(R.string.open_settings));
-        profileMgr.load(appCtx, getString(R.string.setting_fullname));
-        profileMgr.load(appCtx, getString(R.string.setting_phone_number));
-        profileMgr.load(appCtx, getString(R.string.setting_email_address));
-        profileMgr.load(appCtx, getString(R.string.setting_home_address));
-        profileMgr.load(appCtx, getString(R.string.setting_work_address));
-        profileMgr.load(appCtx, "homelat");
-        profileMgr.load(appCtx, "homelong");
-        profileMgr.load(appCtx, "worklat");
-        profileMgr.load(appCtx, "worklong");
-        profileMgr.load(appCtx, getString(R.string.setting_tag));
 
-        // Check that sharing preference value is numerical and if not set it to zero
-        String sharing = profileMgr.load(appCtx, getString(R.string.setting_sharing));
-        try {
-            int val = Integer.parseInt(sharing);
-        } catch (NumberFormatException e) {
-            profileMgr.store(appCtx, getString(R.string.setting_sharing), "0");
-        }
-
-        // Check that sharing preference value is numerical and if not set it to zero
-        String location = profileMgr.load(appCtx, getString(R.string.setting_location));
-        try {
-            int val = Integer.parseInt(location);
-        } catch (NumberFormatException e) {
-            profileMgr.store(appCtx, getString(R.string.setting_location), "0");
-        }
-
-        // Open settings, if username not set
+        // Open settings, if username not set or settings set to be opened on splash screen
         if (userName.isEmpty() || openSettings.equals("yes")) {
             // Toast.makeText(this.getApplicationContext(), "Write a name for your profile.", Toast.LENGTH_LONG).show();
             profileMgr.store(appCtx, getString(R.string.open_settings), "no");
@@ -394,6 +381,12 @@ MainActivity extends AppCompatActivity implements HeliosMessageListener, Context
         mTimeSensor.startUpdates();
         // WiFi sensor updates
         mWifiSensor.startUpdates();
+    }
+
+    private void notifyDataSetChanged() {
+        if(mTopicAdapter != null) {
+            mTopicAdapter.notifyDataSetChanged();
+        }
     }
 
     @Override
@@ -448,9 +441,9 @@ MainActivity extends AppCompatActivity implements HeliosMessageListener, Context
         }
 
         // init TrustManager
-        mTrustManager = new TrustManager(mEgoNetwork, 100, new HashMap<>());
+        // mTrustManager = new TrustManager(mEgoNetwork, 100, new HashMap<>());
         // start TrustManager
-        mTrustManager.startModule();
+        // mTrustManager.startModule();
     }
 
     //  only for testing ...
@@ -590,7 +583,7 @@ MainActivity extends AppCompatActivity implements HeliosMessageListener, Context
                     Log.e(TAG, "DateTimeParseException from received message: " + e.toString());
                     // TODO:? timestamp = now()?
                 }
-                if(msgPart.senderUUID.equals(HeliosUserData.getInstance().getValue(getString(R.string.setting_user_id)))) {
+                if(msgPart.senderUUID != null && msgPart.senderUUID.equals(HeliosUserData.getInstance().getValue(getString(R.string.setting_user_id)))) {
                     // sent message
                     String messageTopic = (topic == null) ? msgPart.to : topic.getTopicName();
                     String to = messageTopic == null ? msgPart.to : null;
@@ -598,7 +591,14 @@ MainActivity extends AppCompatActivity implements HeliosMessageListener, Context
                 } else { // received message
                     // DirectChat topics have sender's name
                     String messageTopic = (topic == null) ? msgPart.senderName : topic.getTopicName();
-                    msgInfo = new MessageInfo(msgPart.uuid, msgPart.senderName, timestamp, messageTopic, msgPart.msg);
+                    String networkId = (msgPart.senderNetworkId != null) ? msgPart.senderNetworkId
+                        : HeliosMessagingServiceHelper.getInstance().getUserNetworkIdByUUID(msgPart.senderUUID);
+                    List<String> contextIds;
+                    if (networkId != null)
+                        contextIds = mContactList.getTopicAndContactContexts(messageTopic, msgPart.senderName + ":" + networkId);
+                    else
+                        contextIds = mContactList.getTopicContexts(messageTopic);
+                    msgInfo = new MessageInfo(msgPart.uuid, msgPart.senderName, timestamp, 0, contextIds, messageTopic, msgPart.msg);
                 }
             }
         } catch (JsonParseException e) {
@@ -800,6 +800,10 @@ MainActivity extends AppCompatActivity implements HeliosMessageListener, Context
                 startActivity(new Intent(this, MyContextsActivity.class));
                 return true;
 
+            case R.id.contact_list:
+                startActivity(new Intent(this, ContactListActivity.class));
+                return true;
+
             default:
                 // If we got here, the user's action was not recognized.
                 // Invoke the superclass to handle it.
@@ -812,7 +816,7 @@ MainActivity extends AppCompatActivity implements HeliosMessageListener, Context
         Log.d(TAG, "joinNewTopic :" + topic);
 
         if (!TextUtils.isEmpty(topic)) {
-            ArrayList<HeliosTopicContext> arrTopics = HeliosConversationList.getInstance().getTopics();
+            ArrayList<HeliosTopicContext> arrTopics = mContactList.getTopics();
             for (int i = 0; i < arrTopics.size(); i++) {
                 HeliosTopicContext tpc = arrTopics.get(i);
                 if (tpc.topic.equals(topic)) {
@@ -822,9 +826,6 @@ MainActivity extends AppCompatActivity implements HeliosMessageListener, Context
             }
             createConversation(topic);
             MessagingService service = mMessageMgr.getService();
-            if(service != null) {
-                service.doSaveJson();
-            }
         }
     }
 
@@ -835,6 +836,8 @@ MainActivity extends AppCompatActivity implements HeliosMessageListener, Context
         defaultConversation.topic = new HeliosTopicContext(topicName, "-", "-", "-");
 
         HeliosConversationList.getInstance().addConversation(defaultConversation);
+
+        mContactList.addTopic(topicName);
 
         // Update topic adapter
         notifyDataSetUpdate();
@@ -913,13 +916,17 @@ MainActivity extends AppCompatActivity implements HeliosMessageListener, Context
             findViewById(R.id.heliosWelcome).setVisibility(View.INVISIBLE);
             findViewById(R.id.progressBarUPDATE).setVisibility(View.INVISIBLE);
             findViewById(R.id.heliosSocialNetwork).setVisibility(View.INVISIBLE);
-            mTopicAdapter.updateDataset();
+            if(mTopicAdapter != null) {
+                mTopicAdapter.updateDataset();
+            }
         });
     }
 
     private final Runnable runnable = new Runnable() {
         public void run() {
-            mTopicAdapter.updateDataset();
+            if(mTopicAdapter != null) {
+                mTopicAdapter.updateDataset();
+            }
         }
     };
 

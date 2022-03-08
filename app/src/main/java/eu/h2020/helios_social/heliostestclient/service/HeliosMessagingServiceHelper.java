@@ -23,7 +23,6 @@ import eu.h2020.helios_social.core.messaging.HeliosMessageListener;
 import eu.h2020.helios_social.core.messaging.HeliosMessagingException;
 import eu.h2020.helios_social.core.messaging.HeliosTopic;
 import eu.h2020.helios_social.core.messaging.MessagingConstants;
-import eu.h2020.helios_social.core.messaging.data.HeliosConversationList;
 import eu.h2020.helios_social.core.messaging.data.HeliosMessagePart;
 import eu.h2020.helios_social.core.messaging.data.HeliosTopicContext;
 import eu.h2020.helios_social.core.messaging.data.JsonMessageConverter;
@@ -176,7 +175,7 @@ public class HeliosMessagingServiceHelper {
     private void subscribeFollowedTopics() {
         if (mBound) {
             //TODO topics should be loaded already when this is called
-            ArrayList<HeliosTopicContext> arrTopics = HeliosConversationList.getInstance().getTopics();
+            ArrayList<HeliosTopicContext> arrTopics = ContactList.getInstance().getTopics();
             for (int i = 0; i < arrTopics.size(); i++) {
                 HeliosTopicContext tpc = arrTopics.get(i);
                 Log.d(TAG, "subscribe topics() tpc.topic:" + tpc.topic + " tpc.uuid:" + tpc.uuid);

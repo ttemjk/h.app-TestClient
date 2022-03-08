@@ -7,6 +7,7 @@ import android.os.Handler;
 import android.transition.Fade;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.preference.PreferenceManager;
 
 import java.util.logging.Logger;
 
@@ -37,6 +38,7 @@ public class SplashScreenActivity extends AppCompatActivity {
 
         setContentView(R.layout.splash);
 
+        // Init/check user settings
         if (checkUserAccount()) {
             // Create username fragment, if username not set
             getSupportFragmentManager()
@@ -60,6 +62,10 @@ public class SplashScreenActivity extends AppCompatActivity {
     private boolean checkUserAccount() {
         HeliosProfileManager profileMgr = HeliosProfileManager.getInstance();
         android.content.Context appCtx = getApplicationContext();
+
+        // Load default values, in case settings are not launched before
+        PreferenceManager.setDefaultValues(appCtx, R.xml.settings, false);
+        PreferenceManager.setDefaultValues(appCtx, R.xml.notifsettings, true);
 
         // Check ProfileManager key generation
         profileMgr.keyInit(appCtx);

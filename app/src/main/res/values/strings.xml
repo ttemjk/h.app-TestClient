@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">helios. TEST CLIENT</string>
+    <string name="app_name">helios. AutumnApp GO</string>
     <string name="action_settings">Settings</string>
     <string name="action_test">Test</string>
     <string name="action_send">Send</string>
@@ -33,11 +33,13 @@
     <string name="chat_show_bug_channel">true</string>
     <string-array name="chat_init_topics">
         <item>Citizen Journalist</item>
+        <item>Weather</item>
     </string-array>
     <string name="title_activity_media_view">MediaViewActivity</string>
     <string name="action_peer_tag_list">Discover Others</string>
     <string name="action_topic_members_list">Topic members online</string>
     <string name="action_join_a_topic">Join a topic</string>
+    <string name="action_contact_list">Contact list</string>
     <string name="pref_theme_title">Theme</string>
     <string name="pref_theme_light">Light</string>
     <string name="pref_theme_dark">Dark</string>
@@ -48,4 +50,7 @@
     <string-array name="relay_addresses">
         <item>/ip4/130.188.225.47/tcp/28327/ws/p2p/QmUFSesHRPzJxJzLccTtYc4QNoiDSEe3r6KgBwLdTrxpKh</item>
     </string-array>
+    <string name="swarm_key_protocol">/key/swarm/psk/1.0.0/</string>
+    <string name="swarm_key_encoding">/base16/</string>
+    <string name="swarm_key_data">bc22c182f9f47f3daebf961a0f5242e4731ae7bf566869b530b527d9ef2d3fb0</string>
 </resources>

@@ -5,6 +5,8 @@ import android.app.Application;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+import android.system.ErrnoException;
+import android.system.Os;
 import android.util.Log;
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -64,6 +66,7 @@ public class HeliosApplication extends Application implements Application.Activi
         registerActivityLifecycleCallbacks(this);
 
         initRelayAddresses();
+        initPnetSwarmKey();
     }
 
     @Override
@@ -147,6 +150,35 @@ public class HeliosApplication extends Application implements Application.Activi
             editor.commit();
         } else {
             Log.d(TAG, "No relay addresses");
+        }
+    }
+
+    private void initPnetSwarmKey() {
+        String swarmKeyProtocol = getResources().getString(R.string.swarm_key_protocol);
+        String swarmKeyEncoding = getResources().getString(R.string.swarm_key_encoding);
+        String swarmKeyData = getResources().getString(R.string.swarm_key_data);
+        if (swarmKeyProtocol == null) {
+            Log.d(TAG, "Swarm key protocol not set - ignore pnet key");
+            return;
+        }
+        if (swarmKeyEncoding == null) {
+            Log.d(TAG, "Swarm key encoding not set - ignore pnet key");
+            return;
+        }
+        if (swarmKeyData == null) {
+            Log.d(TAG, "Swarm key data not set - ignore pnet key");
+            return;
+        }
+        SharedPreferences pnetPrefs = getSharedPreferences("helios-node-libp2p-prefs", MODE_PRIVATE);
+        SharedPreferences.Editor editor = pnetPrefs.edit();
+        editor.putString("swarmKeyProtocol", swarmKeyProtocol);
+        editor.putString("swarmKeyEncoding", swarmKeyEncoding);
+        editor.putString("swarmKeyData", swarmKeyData);
+        boolean ok = editor.commit();
+        if (ok) {
+            Log.d(TAG, "Swarm key set");
+        } else {
+            Log.w(TAG, "Swarm key setting failed");
         }
     }
 }

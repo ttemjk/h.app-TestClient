@@ -74,6 +74,9 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ChatView
     public void onBindViewHolder(ChatViewHolder holder, int position) {
         HeliosMessagePart msg = mMessages.get(position);
         holder.view.setTag(position);
+        if(msg.senderUUID == null) {
+            Log.e(TAG, "msg.senderUUID == null!");
+        }
 
         // Lookup view for data population
         TextView tvName = (TextView) holder.view.findViewById(R.id.nameTextView);
@@ -86,7 +89,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ChatView
         // tvMsg.setText(msg.msg);
         tvMsg.setText(Html.fromHtml(msg.msg, Html.FROM_HTML_MODE_LEGACY)); // allow html within the text
 
-        if (msg.senderUUID.equals(mUserId)) {
+        if (msg.senderUUID != null && msg.senderUUID.equals(mUserId)) {
             holder.view.setBackground(mContext.getDrawable(R.drawable.tc_msg_out));
         } else {
             holder.view.setBackground(mContext.getDrawable(R.drawable.tc_msg_in));
@@ -122,7 +125,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ChatView
 
         // Show a symbol if message was sent and received
         ImageView msgReceivedView = (ImageView) holder.view.findViewById(R.id.messageReceived);
-        if (msg.msgReceived && msg.senderUUID.equals(mUserId)) {
+        if (msg.msgReceived && msg.senderUUID != null && msg.senderUUID.equals(mUserId)) {
             msgReceivedView.setVisibility(View.VISIBLE);
         } else {
             msgReceivedView.setVisibility(View.INVISIBLE);

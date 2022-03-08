@@ -55,4 +55,52 @@
     <item>4</item>
     <item>5</item>
   </string-array>
+  <string-array name="notif_icons">
+    <item>Little star</item>
+    <item>Big star</item>
+  </string-array>
+  <string-array name="notif_icon_values">
+    <item>0</item>
+    <item>1</item>
+  </string-array>
+  <string-array name="notif_colors">
+    <item>Black</item>
+    <item>Red</item>
+    <item>Green</item>
+    <item>Blue</item>
+    <item>Yellow</item>
+    <item>Cyan</item>
+    <item>Magenta</item>
+    <item>Dark Gray</item>
+    <item>Gray</item>
+    <item>Light Gray</item>
+    <item>White</item>
+  </string-array>
+  <string-array name="notif_color_values">
+    <item>0</item>
+    <item>1</item>
+    <item>2</item>
+    <item>3</item>
+    <item>4</item>
+    <item>5</item>
+    <item>6</item>
+    <item>7</item>
+    <item>8</item>
+    <item>9</item>
+    <item>10</item>
+  </string-array>
+  <string-array name="notif_intervals">
+    <item>None</item>
+    <item>30 sec</item>
+    <item>1 min</item>
+    <item>1 min 30 sec</item>
+    <item>2 min</item>
+  </string-array>
+  <string-array name="notif_interval_values">
+    <item>0</item>
+    <item>1</item>
+    <item>2</item>
+    <item>3</item>
+    <item>4</item>
+  </string-array>
 </resources>

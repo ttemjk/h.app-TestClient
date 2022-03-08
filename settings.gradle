@@ -1,1 +1,4 @@
 include ':app'
+include ':messaging'
+
+project(':messaging').projectDir = new File("../messaging/lib")

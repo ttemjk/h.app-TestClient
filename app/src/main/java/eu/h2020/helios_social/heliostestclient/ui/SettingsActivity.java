@@ -4,15 +4,21 @@ import android.os.Bundle;
 
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
+import androidx.preference.Preference;
+import androidx.preference.PreferenceFragmentCompat;
+
 import android.view.MenuItem;
 
 
 import eu.h2020.helios_social.heliostestclient.ui.fragments.MySettingsFragment;
+import eu.h2020.helios_social.heliostestclient.ui.fragments.NotifSettingsFragment;
 
 /**
  * Activity for loading settings - provided in a corresponding fragment {@link MySettingsFragment}.
  */
-public class SettingsActivity extends AppCompatActivity {
+public class SettingsActivity extends AppCompatActivity implements
+    PreferenceFragmentCompat.OnPreferenceStartFragmentCallback {
 
     private static final String TAG = "SettingsActivity";
 
@@ -32,7 +38,23 @@ public class SettingsActivity extends AppCompatActivity {
                 .commit();
     }
 
-
+    @Override
+    public boolean onPreferenceStartFragment(PreferenceFragmentCompat caller, Preference pref) {
+        // Instantiate the new Fragment
+        final Bundle args = pref.getExtras();
+        final Fragment fragment = getSupportFragmentManager().getFragmentFactory()
+            .instantiate(getClassLoader(),
+                         pref.getFragment());
+        fragment.setArguments(args);
+        fragment.setTargetFragment(caller, 0);
+        // Replace the existing Fragment with the new Fragment
+        getSupportFragmentManager().beginTransaction()
+            .replace(android.R.id.content, fragment)
+            .addToBackStack(null)
+            .commit();
+        return true;
+    }
+    
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle action bar item clicks here. The action bar will

@@ -17,5 +17,8 @@
     <item
         android:id="@+id/my_contexts"
         android:title="My contexts" />
+    <item
+        android:id="@+id/contact_list"
+        android:title="Contact list" />
 
 </menu>

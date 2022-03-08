@@ -104,7 +104,7 @@ public class MySettingsFragment extends PreferenceFragmentCompat
         if (prefImportance != null) {
             prefImportance.setOnPreferenceChangeListener(this);
             String entry = prefImportance.getEntry().toString();
-            Log.d(TAG, "theme oncreate " + entry);
+            Log.d(TAG, "lowest_message_importance oncreate " + entry);
             prefImportance.setSummary(entry);
         }
 
@@ -223,7 +223,7 @@ public class MySettingsFragment extends PreferenceFragmentCompat
                 pref.setSummary(entry);
                 Log.d(TAG, "lowest message importance is now " + entry);
                 // KISAAH: Is the below bug? tag_setting -> lowest_message_importance??
-                HeliosUserData.getInstance().setValue(getString(R.string.setting_tag), "" + index);
+                // HeliosUserData.getInstance().setValue(getString(R.string.setting_tag), "" + index);
             }
             if (preference.getKey().equals("pref_key_theme")) {
                 Log.d(TAG, "pref_key_theme");

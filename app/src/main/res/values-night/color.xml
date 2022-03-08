@@ -37,5 +37,7 @@
   <color name="tc_context_msg_importance_medium">#ffaaaa</color>
   <color name="tc_context_msg_importance_low">#aaaaff</color>
   <color name="tc_context_msg_importance_very_low">#ccbbcc</color>
+
+  <color name="tc_contact_list_online">#00FF00</color>
   
 </resources>

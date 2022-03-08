@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.preference.PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <PreferenceCategory
+        android:title="Message of Very High Importance">
+      <ListPreference
+          app:key="vhi_icon"
+          app:title="Notification Icon"
+          app:entries="@array/notif_icons"
+          app:entryValues="@array/notif_icon_values"
+          app:defaultValue="1"
+          app:summary="Choose notification icon"
+          />
+      <ListPreference
+          app:key="vhi_color"
+          app:title="Notification Color"
+          app:entries="@array/notif_colors"
+          app:entryValues="@array/notif_color_values"
+          app:defaultValue="1"
+          app:summary="Choose notification color"
+          />
+      <ListPreference
+          app:key="vhi_interval"
+          app:title="Check interval"
+          app:entries="@array/notif_intervals"
+          app:entryValues="@array/notif_interval_values"
+          app:defaultValue="0"
+          app:summary="Choose check interval for messages"
+          />
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        android:title="Message of High Importance">
+      <ListPreference
+          app:key="hi_icon"
+          app:title="Notification Icon"
+          app:entries="@array/notif_icons"
+          app:entryValues="@array/notif_icon_values"
+          app:defaultValue="1"
+          app:summary="Choose notification icon"
+          />
+      <ListPreference
+          app:key="hi_color"
+          app:title="Notification Color"
+          app:entries="@array/notif_colors"
+          app:entryValues="@array/notif_color_values"
+          app:defaultValue="2"
+          app:summary="Choose notification color"
+          />
+      <ListPreference
+          app:key="hi_interval"
+          app:title="Check interval"
+          app:entries="@array/notif_intervals"
+          app:entryValues="@array/notif_interval_values"
+          app:defaultValue="0"
+          app:summary="Choose check interval for messages"
+          />
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        android:title="Message of Medium Importance">
+      <ListPreference
+          app:key="mi_icon"
+          app:title="Notification Icon"
+          app:entries="@array/notif_icons"
+          app:entryValues="@array/notif_icon_values"
+          app:defaultValue="0"
+          app:summary="Choose notification icon"
+          />
+      <ListPreference
+          app:key="mi_color"
+          app:title="Notification Color"
+          app:entries="@array/notif_colors"
+          app:entryValues="@array/notif_color_values"
+          app:defaultValue="0"
+          app:summary="Choose notification color"
+          />
+      <ListPreference
+          app:key="mi_interval"
+          app:title="Check interval"
+          app:entries="@array/notif_intervals"
+          app:entryValues="@array/notif_interval_values"
+          app:defaultValue="0"
+          app:summary="Choose check interval for messages"
+          />
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        android:title="Message of Low Importance">
+      <ListPreference
+          app:key="li_icon"
+          app:title="Notification Icon"
+          app:entries="@array/notif_icons"
+          app:entryValues="@array/notif_icon_values"
+          app:defaultValue="0"
+          app:summary="Choose notification icon"
+          />
+      <ListPreference
+          app:key="li_color"
+          app:title="Notification Color"
+          app:entries="@array/notif_colors"
+          app:entryValues="@array/notif_color_values"
+          app:defaultValue="0"
+          app:summary="Choose notification color"
+          />
+      <ListPreference
+          app:key="li_interval"
+          app:title="Check interval"
+          app:entries="@array/notif_intervals"
+          app:entryValues="@array/notif_interval_values"
+          app:defaultValue="1"
+          app:summary="Choose check interval for messages"
+          />
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        android:title="Message of Very Low Importance">
+      <ListPreference
+          app:key="vli_icon"
+          app:title="Notification Icon"
+          app:entries="@array/notif_icons"
+          app:entryValues="@array/notif_icon_values"
+          app:defaultValue="0"
+          app:summary="Choose notification icon"
+          />
+      <ListPreference
+          app:key="vli_color"
+          app:title="Notification Color"
+          app:entries="@array/notif_colors"
+          app:entryValues="@array/notif_color_values"
+          app:defaultValue="0"
+          app:summary="Choose notification color"
+          />
+      <ListPreference
+          app:key="vli_interval"
+          app:title="Check interval"
+          app:entries="@array/notif_intervals"
+          app:entryValues="@array/notif_interval_values"
+          app:defaultValue="2"
+          app:summary="Choose check interval for messages"
+          />
+    </PreferenceCategory>
+
+</androidx.preference.PreferenceScreen>

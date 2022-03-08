@@ -12,15 +12,20 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.provider.OpenableColumns;
 import android.text.Editable;
+import android.text.Html;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
@@ -33,6 +38,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.List;
 
 import eu.h2020.helios_social.core.messaging.HeliosMessagingException;
 import eu.h2020.helios_social.core.messaging.HeliosTopic;
@@ -43,6 +49,7 @@ import eu.h2020.helios_social.core.messaging.data.HeliosMessagePart;
 import eu.h2020.helios_social.core.messaging.db.HeliosMessageStore;
 import eu.h2020.helios_social.core.profile.HeliosUserData;
 import eu.h2020.helios_social.core.storage.HeliosStorageUtils;
+import eu.h2020.helios_social.heliostestclient.service.ContactList;
 import eu.h2020.helios_social.heliostestclient.service.HeliosMessagingServiceHelper;
 import eu.h2020.helios_social.heliostestclient.ui.adapters.MessageAdapter;
 import eu.h2020.helios_social.heliostestclient.R;
@@ -72,9 +79,13 @@ public class ChatActivity extends BaseChatActivity {
 
         mUserName = HeliosUserData.getInstance().getValue(getString(R.string.setting_username));
         mUserId = HeliosUserData.getInstance().getValue(getString(R.string.setting_user_id));
+        if(TextUtils.isEmpty(mUserId)) {
+            Log.e(TAG, "UserId == null!");
+        }
         if (TextUtils.isEmpty(mUserName)) {
             mUserName = mUserId;
         }
+
 
         mChatId = this.getIntent().getStringExtra(CHAT_ID);
 
@@ -143,8 +154,7 @@ public class ChatActivity extends BaseChatActivity {
             if (intent != null) {
                 String topic = intent.getStringExtra("topic");
                 if (!TextUtils.isEmpty(topic) && mChatId.equals(topic)) {
-                    mMessageAdapter.notifyDataSetChanged();
-                    MainActivity.getActivity().notifyDataSetUpdate();
+                    // mMessageAdapter.notifyDataSetChanged();
                     // If user has not scrolled, smooth scroll to last
                     if (!mHasUserScrolledList) {
                         mListView.scrollToPosition(mMessageAdapter.getItemCount() - 1);
@@ -152,6 +162,8 @@ public class ChatActivity extends BaseChatActivity {
                     } else {
                         checkUnseenMessages();
                     }
+                    mMessageAdapter.notifyDataSetChanged();
+                    MainActivity.getActivity().notifyDataSetUpdate();
                 }
             }
         }
@@ -288,6 +300,7 @@ public class ChatActivity extends BaseChatActivity {
         }
     }
 
+
     private void chooseMediaFileToSend() {
         Intent intent = new Intent();
         intent.setType("*/*");
@@ -298,6 +311,7 @@ public class ChatActivity extends BaseChatActivity {
 
         startActivityForResult(Intent.createChooser(intent, "Select Picture/Video"), PICK_MEDIA_FILE);
     }
+
 
     private long getFileSize(Uri dataUri) {
         // Check file size with Cursor
@@ -460,6 +474,61 @@ public class ChatActivity extends BaseChatActivity {
                 Intent i = new Intent(this, TopicUsersActivity.class);
                 i.putExtra(ChatActivity.CHAT_ID, mChatId);
                 startActivity(i);
+                return true;
+
+            case R.id.topic_contact_list:
+                Intent j = new Intent(this, ContactListActivity.class);
+                j.putExtra(ContactListActivity.TOPIC_NAME, mChatId);
+                startActivity(j);
+                return true;
+
+            case R.id.topic_to_contexts:
+                AlertDialog.Builder builder = new AlertDialog.Builder(ChatActivity.this);
+                String hlColor = '#' + Integer.toHexString(getColor(R.color.helios_highlight_color) & 0xffffff);
+                String titleStr = "Add/remove topic <font color='" + hlColor + "'>" + mChatId + "</font> to/from contexts";
+                builder.setTitle(Html.fromHtml(titleStr, 0));
+                LinearLayout layout = new LinearLayout(ChatActivity.this);
+                LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
+                                                                                 ViewGroup.LayoutParams.WRAP_CONTENT);
+                layout.setLayoutParams(params);
+                layout.setOrientation(LinearLayout.VERTICAL);
+                List<eu.h2020.helios_social.core.context.Context> contexts = MainActivity.mMyContexts.getContexts();
+                ContactList contactList = ContactList.getInstance();
+                List<String> topicCtxs = contactList.getTopicContexts(mChatId);
+                String activeColor = '#' + Integer.toHexString(getColor(R.color.tc_contact_list_online) & 0xffffff);
+                Integer ids[] = new Integer[contexts.size()];
+                for (int c = 0; c < contexts.size(); c++) {
+                    eu.h2020.helios_social.core.context.Context ctx = contexts.get(c);
+                    CheckBox cb = new CheckBox(this);
+                    String cbText = ctx.getName();
+                    if (ctx.isActive())
+                        cb.setText(Html.fromHtml("<font color='" + activeColor + "'>" + ctx.getName() + "</font>", 0));
+                    else
+                        cb.setText(cbText);
+                    int cbId = View.generateViewId();
+                    cb.setId(cbId);
+                    ids[c] = cbId;
+                    // Set checked, if already added
+                    if (topicCtxs.contains(ctx.getId()))
+                        cb.setChecked(true);
+                    layout.addView(cb);
+                }
+                builder.setView(layout);
+                builder.setPositiveButton("OK", (dialog, which) -> {});
+                builder.setNegativeButton("Cancel", (dialog, which) -> dialog.cancel());
+                final AlertDialog ttcDialog = builder.create();
+                ttcDialog.show();
+                ttcDialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(view1 -> {
+                        for (int c = 0; c < contexts.size(); c++) {
+                            final CheckBox cb = layout.findViewById(ids[c]);
+                            String contextId = contexts.get(c).getId();
+                            if (cb.isChecked() && !topicCtxs.contains(contextId))
+                                contactList.addContextToTopic(mChatId, contextId);
+                            else if (!cb.isChecked() && topicCtxs.contains(contextId)) 
+                                contactList.removeContextFromTopic(mChatId, contextId);
+                        }
+                        ttcDialog.dismiss();
+                });
                 return true;
 
             default:

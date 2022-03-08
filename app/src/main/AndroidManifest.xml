@@ -47,6 +47,11 @@
             android:screenOrientation="portrait"
             android:theme="@style/HeliosTheme.NoActionBar" />
         <activity
+            android:name="eu.h2020.helios_social.heliostestclient.ui.ContactListActivity"
+            android:label="@string/action_contact_list"
+            android:screenOrientation="portrait"
+            android:theme="@style/HeliosTheme.NoActionBar" />
+        <activity
             android:name="eu.h2020.helios_social.heliostestclient.ui.MyContextsActivity"
             android:label="MyContexts"
             android:screenOrientation="portrait"

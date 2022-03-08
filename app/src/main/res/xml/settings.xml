@@ -94,47 +94,54 @@
 
     <PreferenceCategory
         android:title="Settings">
-        <ListPreference
-            app:key="list"
-            app:title="Profile share"
-            app:entries="@array/profile_share_names"
-            app:entryValues="@array/profile_share_values"
-            app:defaultValue="0"
-            app:summary="Choose profile share options"
-            />
+      <Preference
+	  app:key="notif_preference"
+	  app:title="Message Notifications"
+	  app:summary="Set notifications for different message importances."
+	  app:fragment="eu.h2020.helios_social.heliostestclient.ui.fragments.NotifSettingsFragment"/>
 
-        <ListPreference
-            app:key="location_setting"
-            app:title="Use device location to determine context"
-            app:entries="@array/location_updates"
-            app:entryValues="@array/location_updates_values"
-            app:defaultValue="0"
-            app:summary="Disable or enable"
-            />
+      <ListPreference
+          app:key="list"
+          app:title="Profile share"
+          app:entries="@array/profile_share_names"
+          app:entryValues="@array/profile_share_values"
+          app:defaultValue="0"
+          app:summary="Choose profile share options"
+          />
 
-        <EditTextPreference app:title="Maximum messages shown on context"
-            app:key="max_context_messages"
-            app:defaultValue="3"
-            app:summary="Give maximum number of messages shown on context entry."
-            />
+      <ListPreference
+          app:key="location_setting"
+          app:title="Use device location to determine context"
+          app:entries="@array/location_updates"
+          app:entryValues="@array/location_updates_values"
+          app:defaultValue="0"
+          app:summary="Disable or enable"
+          />
 
-        <ListPreference
-            app:key="lowest_message_importance"
-            app:title="Lowest message importance shown on context"
-            app:entries="@array/message_importances"
-            app:entryValues="@array/message_importance_values"
-            app:defaultValue="0"
-            app:summary="Set lowest importance for messages shown on context entry."
-            />
+      <EditTextPreference
+	  app:title="Maximum messages shown on context"
+	  app:key="max_context_messages"
+	  app:defaultValue="3"
+	  app:summary="Give maximum number of messages shown on context entry."
+	  />
 
-        <ListPreference
-            app:key="pref_key_theme"
-            app:title="Theme"
-            app:entries="@array/pref_theme_entries"
-            app:entryValues="@array/pref_theme_values"
-            app:defaultValue="@string/pref_theme_dark_value"
-            app:summary="Choose Theme"
-            />
+      <ListPreference
+          app:key="lowest_message_importance"
+          app:title="Lowest message importance shown on context"
+          app:entries="@array/message_importances"
+          app:entryValues="@array/message_importance_values"
+          app:defaultValue="0"
+          app:summary="Set lowest importance for messages shown on context entry."
+          />
+
+      <ListPreference
+          app:key="pref_key_theme"
+          app:title="Theme"
+          app:entries="@array/pref_theme_entries"
+          app:entryValues="@array/pref_theme_values"
+          app:defaultValue="@string/pref_theme_dark_value"
+          app:summary="Choose Theme"
+          />
 
     </PreferenceCategory>
 

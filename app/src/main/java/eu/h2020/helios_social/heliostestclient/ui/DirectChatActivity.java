@@ -14,14 +14,19 @@ import android.os.Handler;
 import android.os.Process;
 import android.provider.OpenableColumns;
 import android.text.Editable;
+import android.text.Html;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
@@ -37,6 +42,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
@@ -52,6 +58,7 @@ import eu.h2020.helios_social.core.messaging.data.HeliosTopicContext;
 import eu.h2020.helios_social.core.messaging.db.HeliosMessageStore;
 import eu.h2020.helios_social.core.profile.HeliosUserData;
 import eu.h2020.helios_social.core.storage.HeliosStorageUtils;
+import eu.h2020.helios_social.heliostestclient.service.ContactList;
 import eu.h2020.helios_social.heliostestclient.service.HeliosMessagingServiceHelper;
 import eu.h2020.helios_social.heliostestclient.ui.adapters.MessageAdapter;
 import eu.h2020.helios_social.heliostestclient.R;
@@ -68,6 +75,7 @@ import static eu.h2020.helios_social.core.messaging.MessagingConstants.HELIOS_DI
 public class DirectChatActivity extends BaseChatActivity {
     public static final String CHAT_NETWORK_ID = DirectChatActivity.class.getCanonicalName() + "CHATNETWORKID";
     public static final String CHAT_UUID = DirectChatActivity.class.getCanonicalName() + "CHATUUID";
+    public static final String CHAT_ID = DirectChatActivity.class.getCanonicalName() + "CHATID";
     private static final String TAG = "DirectChatActivity";
 
     private static final long TIMEOUT_SEND_CHAT_FILE_PROTO = 40 * 1000L;
@@ -248,7 +256,8 @@ public class DirectChatActivity extends BaseChatActivity {
                     // No previous direct chat, but we have the user's information. Create/store a new chat.
                     Log.d(TAG, "DirectChat: creating new chat for known user:" + mReceiverName);
                     if (TextUtils.isEmpty(mReceiverName)) {
-                        mReceiverName = mReceiverUUID;
+                        String topicName = this.getIntent().getStringExtra(CHAT_ID);
+                        mReceiverName = (topicName == null) ? mReceiverUUID : topicName;
                     }
                     // Creating new chat with known user
                     // TODO: -- modifies storage!
@@ -258,6 +267,7 @@ public class DirectChatActivity extends BaseChatActivity {
                     newConversation.topic.uuid = mReceiverUUID;
                     ArrayList<HeliosMessagePart> oldMessages = mChatMessageStore.loadMessages(mReceiverUUID);
                     newConversation.joinMessages(oldMessages, HeliosConversation.JoinLocation.PREPEND);
+                    ContactList.getInstance().addTopic(topic.getTopicName(), mReceiverUUID, "", mReceiverName, "");
                     HeliosConversationList.getInstance().addConversation(newConversation);
                     mMessageAdapter = new MessageAdapter(this, mUserId, HeliosConversationList.getInstance().getConversationByTopicUUID(mReceiverUUID).messages);
                 } else {
@@ -306,6 +316,13 @@ public class DirectChatActivity extends BaseChatActivity {
         mMessageAdapter.notifyDataSetChanged();
         mMessageAdapter.setOnItemClickListener(mOnClickListener);
         LocalBroadcastManager.getInstance(this).registerReceiver(mReceiver, new IntentFilter("helios_message"));
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.menu_dm_chat, menu);
+        return true;
     }
 
     @Override
@@ -463,6 +480,7 @@ public class DirectChatActivity extends BaseChatActivity {
                         // This receiver is not called from the main thread
                         mHandler.postDelayed(() -> checkUnseenMessages(), 1);
                     }
+                    MainActivity.getActivity().notifyDataSetUpdate();
                 } else {
                     Log.e(TAG, "Error: received from does not match.");
                 }
@@ -858,6 +876,65 @@ public class DirectChatActivity extends BaseChatActivity {
         switch (id) {
             case android.R.id.home:
                 this.finish();
+                return true;
+
+            case R.id.peer_to_contexts:
+                if (mReceiverName == null || mReceiverNetworkId == null) {
+                    AlertDialog alert = new AlertDialog.Builder(DirectChatActivity.this).create();
+                    alert.setTitle("Peer cannot be identified");
+                    alert.setMessage("Peer name or network id not known.");
+                    alert.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
+                                    (dialog, which) -> dialog.dismiss());
+                    alert.show();
+                    return true;
+                }
+                AlertDialog.Builder builder = new AlertDialog.Builder(DirectChatActivity.this);
+                String hlColor = '#' + Integer.toHexString(getColor(R.color.helios_highlight_color) & 0xffffff);
+                String titleStr = "Add/remove peer <font color='" + hlColor + "'>" + mReceiverName + "</font> to/from contexts";
+                builder.setTitle(Html.fromHtml(titleStr, 0));
+                LinearLayout layout = new LinearLayout(DirectChatActivity.this);
+                LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
+                                                                                 ViewGroup.LayoutParams.WRAP_CONTENT);
+                layout.setLayoutParams(params);
+                layout.setOrientation(LinearLayout.VERTICAL);
+                List<eu.h2020.helios_social.core.context.Context> contexts = MainActivity.mMyContexts.getContexts();
+                ContactList contactList = ContactList.getInstance();
+                String contactId = mReceiverName + ":" + mReceiverNetworkId;
+                List<String> contactCtxs = contactList.getContactContexts(contactId);
+                String activeColor = '#' + Integer.toHexString(getColor(R.color.tc_contact_list_online) & 0xffffff);
+                Integer ids[] = new Integer[contexts.size()];
+                for (int c = 0; c < contexts.size(); c++) {
+                    eu.h2020.helios_social.core.context.Context ctx = contexts.get(c);
+                    CheckBox cb = new CheckBox(this);
+                    String cbText = ctx.getName();
+                    if (ctx.isActive())
+                        cb.setText(Html.fromHtml("<font color='" + activeColor + "'>" + ctx.getName() + "</font>", 0));
+                    else
+                        cb.setText(cbText);
+                    int cbId = View.generateViewId();
+                    cb.setId(cbId);
+                    ids[c] = cbId;
+                    // Set checked, if already added
+                    if (contactCtxs.contains(ctx.getId()))
+                        cb.setChecked(true);
+                    layout.addView(cb);
+                }
+                builder.setView(layout);
+                builder.setPositiveButton("OK", (dialog, which) -> {});
+                builder.setNegativeButton("Cancel", (dialog, which) -> dialog.cancel());
+                final AlertDialog ptcDialog = builder.create();
+                ptcDialog.show();
+                ptcDialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(view1 -> {
+                        for (int c = 0; c < contexts.size(); c++) {
+                            final CheckBox cb = layout.findViewById(ids[c]);
+                            String contextId = contexts.get(c).getId();
+                            if (cb.isChecked() && !contactCtxs.contains(contextId))
+                                contactList.addContextToContact(contactId, contextId);
+                            else if (!cb.isChecked() && contactCtxs.contains(contextId))
+                                contactList.removeContextFromContact(contactId, contextId);
+                        }
+                        ptcDialog.dismiss();
+                });
                 return true;
 
             default:

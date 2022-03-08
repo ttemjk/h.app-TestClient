@@ -20,9 +20,9 @@ import eu.h2020.helios_social.core.context.Context;
 import eu.h2020.helios_social.core.info_control.InfoControl;
 import eu.h2020.helios_social.core.info_control.MessageImportance;
 import eu.h2020.helios_social.core.info_control.MessageInfo;
-import eu.h2020.helios_social.core.messaging.data.HeliosConversationList;
 import eu.h2020.helios_social.core.messaging.data.HeliosTopicContext;
 import eu.h2020.helios_social.core.profile.HeliosProfileManager;
+import eu.h2020.helios_social.heliostestclient.service.ContactList;
 import eu.h2020.helios_social.heliostestclient.ui.ChatActivity;
 import eu.h2020.helios_social.heliostestclient.ui.DirectChatActivity;
 import eu.h2020.helios_social.heliostestclient.R;
@@ -212,7 +212,7 @@ public class ContextAdapter extends RecyclerView.Adapter<ContextAdapter.MyViewHo
             if (mi.getMessageTopic().equals(mi.getFrom())) {
                 // Find Direct Chat UUID
                 String uuid = null;
-                ArrayList<HeliosTopicContext> htcs = HeliosConversationList.getInstance().getTopics();
+                ArrayList<HeliosTopicContext> htcs = ContactList.getInstance().getTopics();
                 for (HeliosTopicContext htc: htcs)
                     if (htc.topic.equals(mi.getFrom())) {
                         uuid = htc.uuid;

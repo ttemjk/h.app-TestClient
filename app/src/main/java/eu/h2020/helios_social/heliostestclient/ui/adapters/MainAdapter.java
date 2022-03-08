@@ -22,9 +22,12 @@ import eu.h2020.helios_social.core.context.Context;
 import eu.h2020.helios_social.core.info_control.InfoControl;
 import eu.h2020.helios_social.core.info_control.MessageInfo;
 import eu.h2020.helios_social.core.info_control.MessageImportance;
-import eu.h2020.helios_social.core.profile.HeliosProfileManager;
+import eu.h2020.helios_social.core.messaging.data.HeliosConversation;
 import eu.h2020.helios_social.core.messaging.data.HeliosConversationList;
+import eu.h2020.helios_social.core.messaging.data.HeliosMessagePart;
+import eu.h2020.helios_social.core.profile.HeliosProfileManager;
 import eu.h2020.helios_social.core.messaging.data.HeliosTopicContext;
+import eu.h2020.helios_social.heliostestclient.service.ContactList;
 import eu.h2020.helios_social.heliostestclient.ui.ChatActivity;
 import eu.h2020.helios_social.heliostestclient.ui.DirectChatActivity;
 import eu.h2020.helios_social.heliostestclient.R;
@@ -200,6 +203,7 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.TopicContextVi
         TextView tvTopic = (TextView) holder.itemView.findViewById(R.id.topicTextView);
         TextView tvTime = (TextView) holder.itemView.findViewById(R.id.timeTextView);
 
+        getLastMessageInfo(topic);
         // Populate the data into the template view using the data object
         tvParticipants.setText(topic.participants);
 
@@ -212,6 +216,21 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.TopicContextVi
 
         tvTime.setText(topic.ts);
         Log.d(TAG, "last holder at " + position);
+    }
+
+    // Update topic latest message info
+    private void getLastMessageInfo(HeliosTopicContext topic) {
+        if(topic != null && topic.topic != null) {
+            HeliosConversation c = HeliosConversationList.getInstance().getConversation(topic.topic);
+            if(c != null) {
+                HeliosMessagePart msg = c.getLatestMessage();
+                if(msg != null && msg.msg != null && msg.senderName != null) {
+                    topic.lastMsg = msg.msg;
+                    topic.ts = msg.getLocaleTs();
+                    topic.participants = msg.senderName + ":" + msg.msg;
+                }
+            }
+        }
     }
 
     private void onBindContextViewHolder(MainAdapter.TopicContextViewHolder holder, int position) {
@@ -294,7 +313,7 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.TopicContextVi
             if (mi.getMessageTopic().equals(mi.getFrom())) {
                 // Find Direct Chat UUID
                 String uuid = null;
-                ArrayList<HeliosTopicContext> htcs = HeliosConversationList.getInstance().getTopics();
+                ArrayList<HeliosTopicContext> htcs = ContactList.getInstance().getTopics();
                 for (HeliosTopicContext htc: htcs)
                     if (htc.topic.equals(mi.getFrom())) {
                         uuid = htc.uuid;

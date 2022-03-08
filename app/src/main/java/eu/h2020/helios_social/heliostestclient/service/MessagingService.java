@@ -1,9 +1,5 @@
 package eu.h2020.helios_social.heliostestclient.service;
 
-import android.app.Notification;
-import android.app.NotificationChannel;
-import android.app.NotificationManager;
-import android.app.PendingIntent;
 import android.app.Service;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -11,17 +7,13 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
-import android.graphics.Color;
 import android.os.Binder;
-import android.os.Build;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.IBinder;
 import android.text.TextUtils;
 import android.util.Log;
 
-import androidx.core.app.NotificationCompat;
-import androidx.core.app.NotificationManagerCompat;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.google.gson.Gson;
@@ -47,9 +39,6 @@ import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
-import eu.h2020.helios_social.core.info_control.InfoControl;
-import eu.h2020.helios_social.core.info_control.MessageImportance;
-import eu.h2020.helios_social.core.info_control.MessageInfo;
 import eu.h2020.helios_social.core.messaging.HeliosConnect;
 import eu.h2020.helios_social.core.messaging.HeliosConnectionInfo;
 import eu.h2020.helios_social.core.messaging.HeliosIdentityInfo;
@@ -80,6 +69,7 @@ import eu.h2020.helios_social.core.messaging.data.HeliosConversationList;
 import eu.h2020.helios_social.core.messaging.data.HeliosMessagePart;
 import eu.h2020.helios_social.core.messaging.data.HeliosTopicContext;
 import eu.h2020.helios_social.core.messaging.data.JsonMessageConverter;
+import eu.h2020.helios_social.core.info_control.NotificationsHelper;
 import eu.h2020.helios_social.heliostestclient.ui.MainActivity;
 import eu.h2020.helios_social.heliostestclient.R;
 import kotlin.Unit;
@@ -101,21 +91,16 @@ public class MessagingService extends Service implements HeliosMessaging, Helios
     public static final String START_ACTION = "start_action";
     public static final String STOP_ACTION = "stop_action";
     public static final String FOREGROUND_ACTION = "fg_action";
-    public static final String CHANNEL_ID = "HELIOS_messaging";
-    public static final String CHANNEL_HIGH_ID = "HELIOS_messaging_high";
-    public static final String CHANNEL_LOW_ID = "HELIOS_messaging_low";
 
     public static final String TAG_LIST_UPDATE = "helios_tag_list_update";
 
     private static final String EGO_MAPPING_SHARED_PREF_NAME = "helios-identity-ego-network-id-mappings";
     private static final String EGO_MAPPING_SHARED_PREF_KEY = "json";
 
-    public static final String GROUP_HELIOS = "eu.h2020.helios_social.HELIOS_MESSAGE_GROUP";
     public static final int ONGOING_NOTIFICATION_ID = 1;
 
     private static final boolean SHOW_ONLINE_MSG = false;
 
-    private int testNotificationId = 0;
     private boolean mLoadingMessages = false;
     // Binder given to clients
     private final IBinder mBinder = new LocalBinder();
@@ -132,6 +117,7 @@ public class MessagingService extends Service implements HeliosMessaging, Helios
     private final boolean mFilterHeartbeatMsg = true;
     private final boolean mFilterJoinMsg = false;
     private HeliosMessageStore mChatMessageStore;
+    private static final ContactList mContactList = ContactList.getInstance();
 
     private final HandlerThread mHandlerThread = new HandlerThread("JsonHandlerThread");
     private Handler mHandler;
@@ -139,6 +125,7 @@ public class MessagingService extends Service implements HeliosMessaging, Helios
     private final HeartbeatManager mHeartbeatManager = HeartbeatManager.getInstance();
     private HeliosIdentityInfo mHeliosIdentityInfo = null;
     private boolean mShouldNotify = false;
+    private final NotificationsHelper mNotificationsHelper = NotificationsHelper.getInstance();
 
     private final BroadcastReceiver mBackgroundListener = new BroadcastReceiver() {
         @Override
@@ -173,7 +160,7 @@ public class MessagingService extends Service implements HeliosMessaging, Helios
                 Log.d(TAG, "Received resend sync: " + json);
                 HeliosMessagePart msg = JsonMessageConverter.getInstance().readHeliosMessagePart(json);
                 HeliosTopic topic = new HeliosTopic(msg.to, "");
-                HeliosMessage tempMsg = new HeliosMessage(json);
+                HeliosMessageDM tempMsg = new HeliosMessageDM(json, null, address);
 
                 // Anyways, if we have seen this user, forward it.
                 mHeliosReceiver.showMessage(topic, tempMsg);
@@ -287,8 +274,8 @@ public class MessagingService extends Service implements HeliosMessaging, Helios
                     HeliosTopic topic = new HeliosTopic(name, "");
                     // Mark message as received
                     receivedMsg.msgReceived = true;
-                    HeliosMessage tempMsg;
-                    tempMsg = new HeliosMessage(JsonMessageConverter.getInstance().convertToJson(receivedMsg), fileName);
+                    HeliosMessageDM tempMsg;
+                    tempMsg = new HeliosMessageDM(JsonMessageConverter.getInstance().convertToJson(receivedMsg), fileName, address);
 
                     // Anyways, if we have seen this user, forward it.
                     mHeliosReceiver.showMessage(topic, tempMsg);
@@ -339,36 +326,17 @@ public class MessagingService extends Service implements HeliosMessaging, Helios
         // The service is being created
         Log.d(TAG, "MessagingService.onCreate()");
 
-        // TODO create a helper class for notifications
-        // Create the NotificationChannel, but only on API 26+ (8/Oreo +) because
-        // the NotificationChannel class is new and not in the support library
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            //CharSequence name = getString(R.string.channel_name);
-            //String description = getString(R.string.channel_description);
-            int importance = NotificationManager.IMPORTANCE_DEFAULT;
-            NotificationChannel channel = new NotificationChannel(CHANNEL_ID, "HELIOS_Message_Channel", importance);
-            channel.setDescription("HELIOS Channel description");
-
-            // high importance channel
-            NotificationChannel channelHigh = new NotificationChannel(CHANNEL_HIGH_ID, "HELIOS_Message_Channel", NotificationManager.IMPORTANCE_HIGH);
-            channelHigh.setDescription("HELIOS Channel description");
-
-            // low importance channel
-            NotificationChannel channelLow = new NotificationChannel(CHANNEL_LOW_ID, "HELIOS_Message_Channel", NotificationManager.IMPORTANCE_MIN);
-            channelLow.setDescription("HELIOS Channel description");
-
-            // Register the channel with the system; you can't change the importance
-            // or other notification behaviors after this
-            NotificationManager notificationManager = getSystemService(NotificationManager.class);
-            notificationManager.createNotificationChannel(channel);
-            notificationManager.createNotificationChannel(channelHigh);
-            notificationManager.createNotificationChannel(channelLow);
-        }
+        mNotificationsHelper.setCallerParams(this.getApplicationContext(),
+                                             MessagingService.class,
+                                             MainActivity.class,
+                                             MainActivity.mInfoControl);
+        // Create notification channels
+        mNotificationsHelper.createChannels();
 
         Log.d(TAG, "Identity info");
         mHeliosIdentityInfo = HeliosProfileManager.getInstance().getIdentityInfo(this.getApplicationContext());
         Log.d(TAG, "startForeground");
-        startForeground(ONGOING_NOTIFICATION_ID, getNotification());
+        startForeground(ONGOING_NOTIFICATION_ID, mNotificationsHelper.getNotification());
 
         mStorageHelper = new StorageHelperClass(this.getApplicationContext());
         mChatMessageStore = new HeliosMessageStore(this.getApplicationContext());
@@ -380,14 +348,10 @@ public class MessagingService extends Service implements HeliosMessaging, Helios
         mHandlerThread.start();
         mHandler = new Handler(mHandlerThread.getLooper());
 
-        // HEARTBEAT
-        // TODO: Is it possible to move this to private constructor?
-        mHeartbeatManager.init();
-
         mHeliosReceiver = new HeliosReceiver();
 
         mHandler.post(() -> {
-            loadJson();
+            loadTopics();
             loadUserNetworkMappings();
 
             LocalBroadcastManager.getInstance(this).registerReceiver(mBackgroundListener, new IntentFilter(MessagingService.FOREGROUND_ACTION));
@@ -395,145 +359,79 @@ public class MessagingService extends Service implements HeliosMessaging, Helios
 
     }
 
-    public void doSaveJson() {
-        mHandler.post(() -> {
-            saveJson();
-        });
-    }
-
-    private void saveJson() {
-        // Don't save if we are still loading previous messages.
-        if (mLoadingMessages) {
-            return;
-        }
-
-        try {
-            // Should block/copy this instead
-            String list = JsonMessageConverter.getInstance().convertConversationListToJson(HeliosConversationList.getInstance().getConversations());
-
-            long res = HeliosStorageManager.getInstance().uploadSync(JSON_FILE_NAME, list.getBytes(), new OperationReadyListener() {
-                @Override
-                public void operationReady(Long aLong) {
-                    Log.d(TAG, "upload result " + String.valueOf(aLong));
-                }
-            }, getApplicationContext());
-
-            Log.d(TAG, "saveJson res " + res);
-        } catch (ExecutionException | InterruptedException e) {
-            e.printStackTrace();
-        } catch (Exception e) {
-            e.printStackTrace();
-            Log.d(TAG, "error saving json " + e.toString());
-        }
-    }
-
-    private void loadJson() {
-        Log.d(TAG, "loadJson()");
-        // Since our service is in the main app process for now, just use the cache singleton to store messages.
-
+    private void loadTopics() {
+        Log.d(TAG, "loadTopics()");
         mLoadingMessages = true;
+
         // show waiting view
         MainActivity activity = MainActivity.getActivity();
         if(activity != null) {
             activity.showWelcomeView();
         }
-        HeliosStorageManager.getInstance().download(JSON_FILE_NAME, new DownloadReadyListener() {
-            @Override
-            public void downloadReady(String s, ByteArrayOutputStream byteArrayOutputStream) {
-                //Log.d(TAG, "downloadReady result " + s + " " + String.valueOf(byteArrayOutputStream));
-                Log.d(TAG, "downloadReady " + s);
+        final ArrayList<HeliosTopicContext> arrTopics = mContactList.getTopics();
 
-                // Load current file, just log errors.
-                ArrayList<HeliosConversation> arr = null;
-                try {
-                    arr = JsonMessageConverter.getInstance().readConversationList(String.valueOf(byteArrayOutputStream));
-                } catch (JsonParseException e) {
-                    Log.e(TAG, "JsonParseException while reading JSON file: " + e.toString());
-                }
-
-                final ArrayList<HeliosTopicContext> msgStoreTopics = mChatMessageStore.loadDirectMessageTopics();
-                final ArrayList<HeliosTopicContext> arrTopics = HeliosConversationList.getInstance().getTopics();
-
-                final String defaultTopic = getString(R.string.chat_default_topic);
-                Log.d(TAG, "defaultTopic = " + defaultTopic);
-
-                // Stored topics and conversations exists
-                if (arr != null && arr.size() > 0)  {
-                    Log.d(TAG, "Loaded Conversations, size: " + arr.size());
-                    HeliosConversationList.getInstance().replaceConversations(arr);
-
-                    for (int i = 0; i < arrTopics.size(); i++) {
-                        HeliosTopicContext topic = arrTopics.get(i);
-                        // Check consistency with mChatMessageStore messages
-                        if (!TextUtils.isEmpty(topic.uuid)) {
-                            for (int a = msgStoreTopics.size() - 1; a >= 0; a--) {
-                                if (topic.uuid.equals((msgStoreTopics.get(a).uuid))) {
-                                    msgStoreTopics.remove(a);
-                                }
-                            }
-                        }
-                    }
-
-                } else { // no stored topics yet (i.e., the application started first time)
-                    Log.d(TAG, "Loaded Conversations empty. Creating default.");
-
-                    String defaultBugChatTopic = getString(R.string.chat_bug_channel);
-                    // Creating default topics, if not existing (i.e., first time starting the app)
-                    createDefaultConversation(defaultTopic);
-
-                    String showBugChannel = getString(R.string.chat_show_bug_channel);
-                    if (showBugChannel != null && showBugChannel.equals("true")) {
-                        createDefaultConversation(defaultBugChatTopic);
-                    }
-                    // init other topics
-                    String[] otherTopics = getResources().getStringArray(R.array.chat_init_topics);
-                    if(otherTopics != null) {
-                        for (String topic : otherTopics) {
-                            createDefaultConversation(topic);
-                        }
+        // Load topic conversations from database to HeliosConversationList
+        for (HeliosTopicContext topic : arrTopics) {
+            if(topic != null && topic.topic != null) {
+                String topicName = topic.topic;
+                Log.d(TAG, "Load topics:" + topicName);
+                ArrayList<HeliosMessagePart> messagesTopic = mChatMessageStore.loadMessages(topicName);
+                HeliosConversation conversationTopic = new HeliosConversation();
+                conversationTopic.topic = new HeliosTopicContext(topicName, "-", "-", "-");
+                if(messagesTopic != null) {
+                    for (HeliosMessagePart message : messagesTopic) {
+                        conversationTopic.addMessage(message);
                     }
                 }
+                HeliosConversationList.getInstance().addConversation(conversationTopic);
+            }
+        }
 
-                // If DMs available that were not loaded from json
-                for (HeliosTopicContext bTopic : msgStoreTopics) {
-                    Log.d(TAG, "##restoring DM chat topic:" + bTopic.topic);
-                    // Load topic info
-                    ArrayList<HeliosMessagePart> oldMessages = mChatMessageStore.loadMessages(bTopic.uuid);
-                    String lastMsg = "";
-                    String participants = "";
-                    String ts = "";
-                    if (!oldMessages.isEmpty()) {
-                        HeliosMessagePart latestMsg = oldMessages.get(oldMessages.size() - 1);
-                        lastMsg = latestMsg.msg;
-                        participants = latestMsg.senderName + ": " + latestMsg.msg;
-                        ts = latestMsg.getLocaleTs();
-                    }
+        final String defaultTopic = getString(R.string.chat_default_topic);
+        Log.d(TAG, "defaultTopic = " + defaultTopic);
 
-                    HeliosConversation loadedConversation = new HeliosConversation();
-                    loadedConversation.topic = new HeliosTopicContext(bTopic.topic, lastMsg, participants, ts);
-                    loadedConversation.topic.uuid = bTopic.uuid;
-                    HeliosConversationList.getInstance().addConversation(loadedConversation);
-                }
+        // Stored topics and conversations exists
+        if (arrTopics != null && arrTopics.size() > 0)  {
+            // Update contact lists from stored messages
+            mContactList.updateStored();
 
-                mLoadingMessages = false;
+        } else { // no stored topics yet (i.e., the application started first time)
+            Log.d(TAG, "Loaded Conversations empty. Creating default.");
 
-                showMessageToListener(null, null);
-                HeliosMessagingServiceHelper.getInstance().onDataLoaded();
-                if(mListener == null) {
-                    Log.e(TAG, "loadJson -- mListener is null.");
-                }
+            String defaultBugChatTopic = getString(R.string.chat_bug_channel);
+            // Creating default topics, if not existing (i.e., first time starting the app)
+            createDefaultConversation(defaultTopic);
 
-                // hide welcome/waiting view
-                if(activity != null) {
-                    activity.hideWelcomeView();
-                }
-                if(SHOW_ONLINE_MSG) {
-                    mHandler.postDelayed(() -> {
-                        sendMessageToDefaultTopic(HeliosMessagePart.MessagePartType.JOIN, "is now online.");
-                    }, 4000);
+            String showBugChannel = getString(R.string.chat_show_bug_channel);
+            if (showBugChannel != null && showBugChannel.equals("true")) {
+                createDefaultConversation(defaultBugChatTopic);
+            }
+            // init other topics
+            String[] otherTopics = getResources().getStringArray(R.array.chat_init_topics);
+            if(otherTopics != null) {
+                for (String topic : otherTopics) {
+                    createDefaultConversation(topic);
                 }
             }
-        }, getApplicationContext());
+        }
+
+        mLoadingMessages = false;
+
+        showMessageToListener(null, null);
+        HeliosMessagingServiceHelper.getInstance().onDataLoaded();
+        if(mListener == null) {
+            Log.e(TAG, "loadTopics -- mListener is null.");
+        }
+
+        // hide welcome/waiting view
+        if(activity != null) {
+            activity.hideWelcomeView();
+        }
+        if(SHOW_ONLINE_MSG) {
+            mHandler.postDelayed(() -> {
+                sendMessageToDefaultTopic(HeliosMessagePart.MessagePartType.JOIN, "is now online.");
+            }, 4000);
+        }
     }
 
     private void createDefaultConversation(String topic) {
@@ -542,6 +440,8 @@ public class MessagingService extends Service implements HeliosMessaging, Helios
         defaultConversation.topic = new HeliosTopicContext(topic, "-", "-", "-");
 
         HeliosConversationList.getInstance().addConversation(defaultConversation);
+
+        mContactList.addTopic(topic);
     }
 
     /*
@@ -552,135 +452,6 @@ public class MessagingService extends Service implements HeliosMessaging, Helios
         //startIntent.setAction(MessagingService.START_ACTION);
     }*/
 
-    // Show notification of a message received.
-    private void showNotification(String title, String message) {
-        Log.d(TAG, "showNotification title:" + title + " message:" + message);
-
-        Context ctx = this.getApplicationContext();
-        Intent notificationIntent = new Intent(ctx, MainActivity.class);
-        // Open the app to the state it was in if opened.
-        notificationIntent.setAction(Intent.ACTION_MAIN);
-        notificationIntent.addCategory(Intent.CATEGORY_LAUNCHER);
-        notificationIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-
-        PendingIntent pendingIntent =
-                PendingIntent.getActivity(ctx, 0, notificationIntent, 0);
-
-        // gets the message's contextual importance (priority)
-        int priority = getMessagePriority(title, message);
-
-        String channelId = priority > NotificationCompat.PRIORITY_DEFAULT ? CHANNEL_HIGH_ID :
-                (priority < NotificationCompat.PRIORITY_DEFAULT ? CHANNEL_LOW_ID : CHANNEL_ID);
-        // channelId = CHANNEL_ID; // use basic channel
-
-        // On Android 7 N (API 24) and higher the system groups notifications. Let's not make
-        // a separate group for normal notifications now.
-        // Build the notification and add the action.
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(ctx, channelId)
-                .setSmallIcon(priority >0 ? android.R.drawable.star_big_on : android.R.drawable.star_on)
-                .setColor(priority > 0 ? Color.RED : Color.BLACK)
-                .setContentTitle(title)  // + ",pr:" + priority)
-                .setContentText(message)
-                .setContentIntent(pendingIntent)
-                .setPriority(priority)  //  .setPriority(NotificationCompat.PRIORITY_HIGH)
-                .setAutoCancel(true);
-
-        // Issue the notification.
-        NotificationManagerCompat notificationManager = NotificationManagerCompat.from(ctx);
-        notificationManager.notify(++testNotificationId, builder.build());
-    }
-
-    /**
-     * Get received message importance (priority) in context
-     * @param title
-     * @param message
-     * @return the priority value
-     */
-    private int getMessagePriority(String title, String message) {
-        InfoControl infoControl = MainActivity.mInfoControl;
-        if(infoControl == null || infoControl.getActiveContexts().size() == 0) {
-            return NotificationCompat.PRIORITY_DEFAULT;
-        }
-        int importance = MessageImportance.IMPORTANCE_VERY_LOW;
-        for (eu.h2020.helios_social.core.context.Context context : infoControl.getActiveContexts()) {
-            int messageImportance = infoControl.getMessageImportance(new MessageInfo(null, 0, title, message), context);
-            if (messageImportance > importance) {
-                importance = messageImportance;
-            }
-        }
-        switch (importance) {
-            case MessageImportance.IMPORTANCE_VERY_HIGH:
-                return NotificationCompat.PRIORITY_MAX;
-            case MessageImportance.IMPORTANCE_HIGH:
-                return NotificationCompat.PRIORITY_HIGH;
-            case MessageImportance.IMPORTANCE_MEDIUM:
-                return NotificationCompat.PRIORITY_DEFAULT;
-            case MessageImportance.IMPORTANCE_LOW:
-                return NotificationCompat.PRIORITY_LOW;
-            case MessageImportance.IMPORTANCE_VERY_LOW:
-                return NotificationCompat.PRIORITY_MIN;
-        }
-        return NotificationCompat.PRIORITY_DEFAULT;
-    }
-
-    private Notification getServiceNotification() {
-        Context ctx = this.getApplicationContext();
-        Intent notificationIntent = new Intent(ctx, MainActivity.class);
-        // Open the app to the state it was in if opened.
-        notificationIntent.setAction(Intent.ACTION_MAIN);
-        notificationIntent.addCategory(Intent.CATEGORY_LAUNCHER);
-        notificationIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-
-        PendingIntent pendingIntent =
-                PendingIntent.getActivity(ctx, 0, notificationIntent, 0);
-
-        Intent stopIntent = new Intent(ctx, MessagingService.class);
-        stopIntent.setAction(MessagingService.STOP_ACTION);
-        PendingIntent pendingIntentStop = PendingIntent.getService(ctx, 0,
-                stopIntent, 0);
-
-        // Group this notification to GROUP_HELIOS -- in order to show Service notification
-        // separately from other notifications.
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(ctx, CHANNEL_ID)
-                .setColor(Color.GREEN)
-                .setSmallIcon(android.R.drawable.star_on)
-                .setContentTitle("HELIOS is connected and running in the background.")
-                .setContentText("Tap below to disconnect.")
-                .setPriority(NotificationCompat.PRIORITY_DEFAULT)
-                .setGroup(GROUP_HELIOS)
-                .setContentIntent(pendingIntent)
-                .setOngoing(true)
-                .addAction(android.R.drawable.ic_menu_delete, "Disconnect/Stop Service",
-                        pendingIntentStop);
-
-        return builder.build();
-    }
-
-    private Notification getNotification() {
-        Context ctx = this.getApplicationContext();
-        Intent notificationIntent = new Intent(ctx, MainActivity.class);
-        // Open the app to the state it was in if opened.
-        notificationIntent.setAction(Intent.ACTION_MAIN);
-        notificationIntent.addCategory(Intent.CATEGORY_LAUNCHER);
-        notificationIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-
-        PendingIntent pendingIntent =
-                PendingIntent.getActivity(ctx, 0, notificationIntent, 0);
-
-        // Group this notification to GROUP_HELIOS -- in order to show Service notification
-        // separately from other notifications.
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(ctx, CHANNEL_ID)
-                .setColor(Color.GREEN)
-                .setSmallIcon(android.R.drawable.star_on)
-                .setContentTitle("HELIOS")
-                .setContentText("Application running.")
-                .setPriority(NotificationCompat.PRIORITY_DEFAULT)
-                .setGroup(GROUP_HELIOS)
-                .setContentIntent(pendingIntent)
-                .setOngoing(true);
-
-        return builder.build();
-    }
 
     /**
      * Start/stop the service using intent.
@@ -704,7 +475,7 @@ public class MessagingService extends Service implements HeliosMessaging, Helios
         if (intent.getAction().equals(MessagingService.START_ACTION)) {
             Log.d(TAG, "MessagingService.START_ACTION");
             Log.d(TAG, "startForeground");
-            startForeground(ONGOING_NOTIFICATION_ID, getNotification());
+            startForeground(ONGOING_NOTIFICATION_ID, mNotificationsHelper.getNotification());
             return START_STICKY;
         } else if (intent.getAction().equals(MessagingService.STOP_ACTION)) {
             Log.d(TAG, "MessagingService.STOP_ACTION");
@@ -743,24 +514,10 @@ public class MessagingService extends Service implements HeliosMessaging, Helios
     @Override
     public void onRebind(Intent intent) {
         Log.d(TAG, "onRebind()");
-        setAppNotification();
+        mNotificationsHelper.setAppNotification(ONGOING_NOTIFICATION_ID);
 
         mConfigurationChange = false;
         super.onRebind(intent);
-    }
-
-    private void setAppNotification() {
-        Context ctx = this.getApplicationContext();
-        NotificationManagerCompat mgr =
-                NotificationManagerCompat.from(ctx);
-        mgr.notify(ONGOING_NOTIFICATION_ID, getNotification());
-    }
-
-    private void setServiceNotification() {
-        Context ctx = this.getApplicationContext();
-        NotificationManagerCompat mgr =
-                NotificationManagerCompat.from(ctx);
-        mgr.notify(ONGOING_NOTIFICATION_ID, getServiceNotification());
     }
 
     @Override
@@ -769,7 +526,8 @@ public class MessagingService extends Service implements HeliosMessaging, Helios
         // Client has exited and no configuration change.
         if (!mConfigurationChange) {
             mListener = null;
-            setServiceNotification();
+            mNotificationsHelper.setServiceNotification(ONGOING_NOTIFICATION_ID,
+                                                        MessagingService.STOP_ACTION);
         }
 
         // To receive onRebind()
@@ -875,7 +633,7 @@ public class MessagingService extends Service implements HeliosMessaging, Helios
 
         boolean topicFound = false;
         // Update topic to singleton
-        ArrayList<HeliosTopicContext> arrTopics = HeliosConversationList.getInstance().getTopics();
+        ArrayList<HeliosTopicContext> arrTopics = mContactList.getTopics();
         for (int i = 0; i < arrTopics.size(); i++) {
             HeliosTopicContext topicContext = arrTopics.get(i);
             if (isDirectMessage) {
@@ -920,6 +678,7 @@ public class MessagingService extends Service implements HeliosMessaging, Helios
         // of the user to the topic.
         if (!topicFound && isDirectMessage) {
             Log.d(TAG, "topic NOT FOUND, adding topic " + heliosTopic.getTopicName());
+            mContactList.addTopic(heliosTopic.getTopicName(), msg.senderUUID, msg.msg, msg.to, msg.getLocaleTs());
             HeliosConversation newConversation = new HeliosConversation();
             newConversation.topic = new HeliosTopicContext(heliosTopic.getTopicName(), msg.msg, msg.to, msg.getLocaleTs());
             newConversation.topic.uuid = msg.senderUUID;
@@ -935,7 +694,7 @@ public class MessagingService extends Service implements HeliosMessaging, Helios
             // don't notify own messages
             if (!mHeliosIdentityInfo.getUserUUID().equals(msg.senderUUID)) {
                 // Showing notification even if we have a listener.
-                showNotification(heliosTopic.getTopicName(), msg.senderName + ": " + msg.msg);
+                mNotificationsHelper.showNotification(heliosTopic.getTopicName(), msg.senderName + ": " + msg.msg);
             }
         }
 
@@ -1029,9 +788,21 @@ public class MessagingService extends Service implements HeliosMessaging, Helios
             // Don't notify every message
             boolean stored = storeHeliosMessage(heliosTopic, msg, (null != mListener), isDirectMessage, networkAddress);
 
+            // Update contact list
+            if (msg.senderNetworkId == null) {
+                // Direct message
+                if (heliosMessage instanceof HeliosMessageDM) {
+                    msg.senderNetworkId = ((HeliosMessageDM)heliosMessage).getNetworkAddress().getNetworkId();
+                    mContactList.update(heliosTopic.getTopicName(), msg, true);
+                }
+            } else {
+                Boolean newMsg = (msg.messageType == HeliosMessagePart.MessagePartType.PUBSUB_SYNC_RESEND) ? false : true;
+                mContactList.update(heliosTopic.getTopicName(), msg, newMsg);
+            }
+
             //TODO: modify logic here, since we should not get duplicates at all to this layer as ReliableLibp2p already stores.
             if (!stored) {
-                stored = true;
+                stored = true; // ??
             }
 
             // Pass the info to listeners if stored
@@ -1051,7 +822,7 @@ public class MessagingService extends Service implements HeliosMessaging, Helios
                         // Don't notify own messages
                         if (!mHeliosIdentityInfo.getUserUUID().equals(msg.senderUUID)) {
                             // Show notification every time, could only show when no listeners?
-                            showNotification(heliosTopic.getTopicName(), msg.senderName + ": " + msg.msg);
+                            mNotificationsHelper.showNotification(heliosTopic.getTopicName(), msg.senderName + ": " + msg.msg);
                         }
                     }
                 }
@@ -1062,8 +833,28 @@ public class MessagingService extends Service implements HeliosMessaging, Helios
                 // If direct message, update still, since processing is not taking care of it now.
                 showMessageToListener(null, heliosMessage);
             }
+            updateTopicContext(isDirectMessage ? null : heliosTopic.getTopicName(), msg);
         }
     }
+
+    private static void updateTopicContext(String topic, HeliosMessagePart msg) {
+        HeliosConversation conversation = null;
+        if(topic == null) { // direct message
+            conversation = HeliosConversationList.getInstance().getConversationByTopicUUID(msg.uuid);
+        } else {
+            conversation = HeliosConversationList.getInstance().getConversation(topic);
+        }
+        if(conversation != null) {
+            HeliosMessagePart latestMessage = conversation.getLatestMessage();
+            if (latestMessage != null) {
+                conversation.topic.lastMsg = latestMessage.msg;
+                conversation.topic.topic = topic;
+                conversation.topic.uuid = topic == null ? msg.senderUUID : null;
+                conversation.topic.ts = msg.getLocaleTs();
+            }
+        }
+    }
+
 
     private void showMessageToListener(HeliosTopic topic, HeliosMessage message) {
         try {
@@ -1348,12 +1139,14 @@ public class MessagingService extends Service implements HeliosMessaging, Helios
         LocalBroadcastManager.getInstance(this).unregisterReceiver(mBackgroundListener);
 
         // Save data to storage
-        saveJson();
+        // saveJson();
 
         storeUserNetworkMappings();
         mChatMessageStore.closeDatabase();
         //mServiceHandler.removeCallbacksAndMessages(null);
 
+        mContactList.storeTopics();
+        
         // Close connections
         try {
             disconnect(null, null);
